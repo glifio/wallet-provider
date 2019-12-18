@@ -1,3 +1,5 @@
+import BigNumber from 'bignumber.js'
+
 import LotusRpcEngine from './LotusRPCEngine';
 
 export { default as LocalNodeProvider } from './providers/LocalNodeProvider'
@@ -10,7 +12,10 @@ class Filecoin {
     });
   }
 
-  getBalance = (address) => this.jsonRpcEngine.request('WalletBalance', address)
+  getBalance = async (address) => {
+    const balance = await this.jsonRpcEngine.request('WalletBalance', address)
+    return new BigNumber(balance)
+  }
 
   getNonce = () => {}
 
