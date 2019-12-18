@@ -6,10 +6,11 @@ export { default as LocalNodeProvider } from './providers/LocalNodeProvider'
 export { default as Message } from './Message'
 
 class Filecoin {
-  constructor(provider) {
+  constructor(provider, {token}) {
     this.wallet = provider
     this.jsonRpcEngine = new LotusRpcEngine({
       apiAddress: 'https://lotus-dev.temporal.cloud/rpc/v0',
+      token,
     });
   }
 

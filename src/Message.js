@@ -35,7 +35,7 @@ class Message {
 	    Value: this.value,
 	    Method: this.method,
       GasPrice: '1000',
-      GasLimit: '0',
+      GasLimit: '300000',
       Params: []
     }
     return message
