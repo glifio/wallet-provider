@@ -1,31 +1,22 @@
+import LotusRpcEngine from './LotusRPCEngine';
+
 export { default as LocalNodeProvider } from './providers/LocalNodeProvider'
 
-class FilecoinWallet {
+class Filecoin {
   constructor(provider) {
-    this.provider = provider
+    this.wallet = provider
+    this.jsonRpcEngine = new LotusRpcEngine({
+      apiAddress: 'https://lotus-dev.temporal.cloud/rpc/v0',
+    });
   }
 
-  newAccount = () => {
-    if (this.provider.newAccount) return this.provider.newAccount()
-    throw new Error('Selected provider does not support newAccount method')
-  }
-
-  getAccounts = () => {
-    if (this.provider.getAccounts) return this.provider.getAccounts();
-    throw new Error(
-      'Selected provider does not support getAccounts method'
-    );
-  }
-
-  getNetwork = () => {}
-
-  switchNetwork = () => {}
+  getBalance = (address) => this.jsonRpcEngine.request('WalletBalance', address)
 
   getNonce = () => {}
 
-  formMessage = () => {}
+  confirmMessage = () => {}
 
   sendMessage = (message) => {}
 }
 
-export default FilecoinWallet
+export default Filecoin
