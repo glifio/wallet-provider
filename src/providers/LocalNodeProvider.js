@@ -10,6 +10,8 @@ class LocalNodeProvider {
   newAccount = () => this.jsonRpcEngine.request('WalletNew', 'secp256k1');
 
   getAccounts = () => this.jsonRpcEngine.request('WalletList');
+
+  sign = (message) => this.jsonRpcEngine.request('WalletSignMessage', message.From, message)
 }
 
 export default LocalNodeProvider
