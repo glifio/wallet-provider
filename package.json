@@ -11,9 +11,7 @@
     "build-node": "babel ./src --out-dir ./dist --source-maps --copy-files",
     "build": "npm run build-node && npm run build-browser && npm run build-module",
     "prepublishOnly": "npm run build",
-    "test": "npm run build && mocha",
-    "write:actors:to:repo": "npm run build && node scripts/writeActorsToRepoCache.js",
-    "write:blocks:to:repo": "npm run build && node scripts/writeBlocksToRepoCache.js"
+    "test": "npm run build && mocha"
   },
   "author": "",
   "license": "(Apache-2.0 OR MIT)",
@@ -29,8 +27,17 @@
     "@babel/plugin-proposal-class-properties": "^7.7.4",
     "@babel/plugin-proposal-object-rest-spread": "^7.7.4",
     "@babel/preset-env": "^7.7.4",
+    "babel-eslint": "^10.0.3",
     "cross-env": "^6.0.3",
-    "mocha": "^6.2.2"
+    "eslint": "^6.1.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-config-prettier": "6.7.0",
+    "eslint-plugin-import": "^2.19.1",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.17.0",
+    "eslint-plugin-react-hooks": "^1.7.0",
+    "mocha": "^6.2.2",
+    "prettier": "1.19.1"
   },
   "files": [
     "dist",

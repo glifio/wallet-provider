@@ -4,7 +4,7 @@ class Message {
   constructor({ to, from, value, method }) {
     this.jsonRpcEngine = new LotusRpcEngine({
       apiAddress: 'https://lotus-dev.temporal.cloud/rpc/v0',
-    });
+    })
     this.nonce = null
     // TODO: better validation
     if (!to) throw new Error('Invalid "to" address')
@@ -21,22 +21,23 @@ class Message {
   }
 
   generateNonce = async () => {
-    const nonce = await this.jsonRpcEngine.request('MpoolGetNonce', this.from);
+    const nonce = await this.jsonRpcEngine.request('MpoolGetNonce', this.from)
     this.nonce = nonce
     return true
   }
 
   encode = () => {
-    if (typeof this.nonce !== 'number') throw new Error('Cannot encode message without a nonce')
+    if (typeof this.nonce !== 'number')
+      throw new Error('Cannot encode message without a nonce')
     const message = {
       To: this.to,
       From: this.from,
       Nonce: this.nonce,
-	    Value: this.value,
-	    Method: this.method,
+      Value: this.value,
+      Method: this.method,
       GasPrice: '1000',
       GasLimit: '300000',
-      Params: []
+      Params: [],
     }
     return message
   }

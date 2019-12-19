@@ -1,17 +1,17 @@
-import axios from 'axios';
+import axios from 'axios'
 
-const removeEmptyHeaders = (headers) => {
-  const newHeaders = {};
+const removeEmptyHeaders = headers => {
+  const newHeaders = {}
   Object.keys(headers).forEach(key => {
-    if (headers[key]) newHeaders[key] = headers[key];
-  });
-  return newHeaders;
+    if (headers[key]) newHeaders[key] = headers[key]
+  })
+  return newHeaders
 }
 
 class LotusRpcEngine {
   constructor({ apiAddress, token }) {
-    this.apiAddress = apiAddress;
-    this.token = token;
+    this.apiAddress = apiAddress
+    this.token = token
   }
 
   async request(method, ...params) {
@@ -29,9 +29,9 @@ class LotusRpcEngine {
           Accept: '*/*',
           Authorization: this.token ? `Bearer ${this.token}` : null,
         }),
-      }
-    );
-    return data.result;
+      },
+    )
+    return data.result
   }
 }
 
