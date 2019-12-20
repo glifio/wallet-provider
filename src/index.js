@@ -19,8 +19,6 @@ class Filecoin {
     return new BigNumber(balance)
   }
 
-  confirmMessage = () => {}
-
   sendMessage = async signedMessage => {
     const tx = await this.jsonRpcEngine.request('MpoolPush', signedMessage)
     return tx

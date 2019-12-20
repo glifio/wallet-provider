@@ -35,8 +35,8 @@ class Message {
       Nonce: this.nonce,
       Value: this.value,
       Method: this.method,
-      GasPrice: '1000',
-      GasLimit: '300000',
+      GasPrice: '3',
+      GasLimit: '1000',
       Params: [],
     }
     return message
