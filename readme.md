@@ -24,7 +24,7 @@ const filecoin = new Filecoin(
 
 ##### getBalance
 
-Returns a promise that resolves to a javascript [bignumber.js]() object with the accounts balance:
+Returns a promise that resolves to a javascript [bignumber.js](https://github.com/MikeMcl/bignumber.js/) object with the accounts balance:
 
 ```js
 const filecoin = new Filecoin(
