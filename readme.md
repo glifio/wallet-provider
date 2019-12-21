@@ -13,7 +13,7 @@ import Filecoin, {
 
 const filecoin = new Filecoin(
   new LocalNodeProvider({
-    apiAddress: 'https://lotus-dev.temporal.cloud/rpc/v0',
+    apiAddress: 'http://127.0.0.1:1234/rpc/v0',
     token: process.env.LOTUS_JWT_TOKEN,
   }),
   { token: process.env.LOTUS_JWT_TOKEN },
@@ -29,7 +29,7 @@ Returns a promise that resolves to a javascript [bignumber.js](https://github.co
 ```js
 const filecoin = new Filecoin(
   new LocalNodeProvider({
-    apiAddress: 'https://lotus-dev.temporal.cloud/rpc/v0',
+    apiAddress: 'http://127.0.0.1:1234/rpc/v0',
     token: process.env.LOTUS_JWT_TOKEN,
   }),
   { token: process.env.LOTUS_JWT_TOKEN },
@@ -49,7 +49,7 @@ Takes a signed message, and resolves a promise whne the transaction is completed
 ```js
 const filecoin = new Filecoin(
   new LocalNodeProvider({
-    apiAddress: 'https://lotus-dev.temporal.cloud/rpc/v0',
+    apiAddress: 'http://127.0.0.1:1234/rpc/v0',
     token: process.env.LOTUS_JWT_TOKEN,
   }),
   { token: process.env.LOTUS_JWT_TOKEN },
@@ -64,7 +64,7 @@ await filecoin.sendMessage(signedMessage)
 ```js
 const filecoin = new Filecoin(
   new LocalNodeProvider({
-    apiAddress: 'https://lotus-dev.temporal.cloud/rpc/v0',
+    apiAddress: 'http://127.0.0.1:1234/rpc/v0',
     token: process.env.LOTUS_JWT_TOKEN,
   }),
   { token: process.env.LOTUS_JWT_TOKEN },
