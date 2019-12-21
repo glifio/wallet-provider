@@ -4,22 +4,181 @@
 
 This wallet provider module is inspired as a combination between [MetaMask's keyring controller](https://github.com/MetaMask/KeyringController) and [web3.js](https://github.com/ethereum/web3.js/). It's experimental so it's likely that it will change, drastically. Below is a description of our design decisions, how it's working, and development plan over the coming weeks/months.
 
-## Current state
-
-Right now the filecoin-wallet-provider only supports a single "key class" provider, so you instantiate like so:
+## Usage
 
 ```js
 import Filecoin, {
   LocalNodeProvider,
 } from '@openworklabs/filecoin-wallet-provider'
 
-export default new Filecoin(
+const filecoin = new Filecoin(
   new LocalNodeProvider({
     apiAddress: 'https://lotus-dev.temporal.cloud/rpc/v0',
     token: process.env.LOTUS_JWT_TOKEN,
   }),
   { token: process.env.LOTUS_JWT_TOKEN },
 )
+```
+
+### Methods:
+
+##### getBalance
+
+Returns a promise that resolves to a javascript [bignumber.js]() object with the accounts balance:
+
+```js
+const filecoin = new Filecoin(
+  new LocalNodeProvider({
+    apiAddress: 'https://lotus-dev.temporal.cloud/rpc/v0',
+    token: process.env.LOTUS_JWT_TOKEN,
+  }),
+  { token: process.env.LOTUS_JWT_TOKEN },
+)
+
+const balance = await filecoin.getBalance(
+  't1jdlfl73voaiblrvn2yfivvn5ifucwwv5f26nfza',
+)
+console.log(balance.toString())
+// 1000000000000
+```
+
+##### sendMessage
+
+Takes a signed message, and resolves a promise whne the transaction is completed (note in the future this should resolve to the SignedMessage `cid`).
+
+```js
+const filecoin = new Filecoin(
+  new LocalNodeProvider({
+    apiAddress: 'https://lotus-dev.temporal.cloud/rpc/v0',
+    token: process.env.LOTUS_JWT_TOKEN,
+  }),
+  { token: process.env.LOTUS_JWT_TOKEN },
+)
+
+// note, see section below on signedMessages
+await filecoin.sendMessage(signedMessage)
+```
+
+#### Wallet methods exposed from the Provider class (more info below on Provider class)
+
+```js
+const filecoin = new Filecoin(
+  new LocalNodeProvider({
+    apiAddress: 'https://lotus-dev.temporal.cloud/rpc/v0',
+    token: process.env.LOTUS_JWT_TOKEN,
+  }),
+  { token: process.env.LOTUS_JWT_TOKEN },
+)
+
+await filecoin.wallet.sign(message) // returns a signed message
+await filecoin.wallet.getAccounts() // ['t1jdlfl73voaiblrvn2yfivvn5ifucwwv5f26nfza', 't1hvuzpfdycc6z6mjgbiyaiojikd6wk2vwy7muuei']
+await filecoin.wallet.newAccount() // 't1jdlfl73voaiblrvn2yfivvn5ifucwwv5f26nfza'
+```
+
+### Provider class
+
+The Filecoin class takes a required "provider" object that implements 3 methods. It should be easy to create a Provider class for Ledger, Trust, wasm based signing libs...etc.
+
+The below examples show how the Provider class should function using the `LocalNodeProvider` as an example.
+
+##### newAccount
+
+Returns a promise that resolves to the Filecoin address of a new account
+
+```js
+const provider = new LocalNodeProvider({
+  apiAddress: 'http://127.0.0.1:1234/rpc/v0',
+  token: 'your_lotus_jwt_',
+})
+
+const newAccount = await provider.newAccount()
+console.log(newAccount)
+// 't1jdlfl73voaiblrvn2yfivvn5ifucwwv5f26nfza'
+```
+
+##### getAccounts
+
+Returns a promise that resolves to an array of Filecoin addresses
+
+```js
+const provider = new LocalNodeProvider({
+  apiAddress: 'http://127.0.0.1:1234/rpc/v0',
+  token: 'your_lotus_jwt_',
+})
+
+const accounts = await provider.getAccounts()
+console.log(accounts)
+// ['t1jdlfl73voaiblrvn2yfivvn5ifucwwv5f26nfza', 't1hvuzpfdycc6z6mjgbiyaiojikd6wk2vwy7muuei']
+```
+
+##### sign
+
+Returns a promise that resolves to a Filecoin [signedMessage]()
+
+```js
+const provider = new LocalNodeProvider({
+  apiAddress: 'http://127.0.0.1:1234/rpc/v0',
+  token: 'your_lotus_jwt_',
+})
+
+// message is a proper Filecoin message, see section below on messages for more details
+
+const signedMsg = await provider.sign(message)
+console.log(signedMsg)
+/*
+{
+  "jsonrpc":"2.0",
+  "result":
+    {
+      "Message": {
+        "To":"t1hvuzpfdycc6z6mjgbiyaiojikd6wk2vwy7muuei",
+        "From":"t1t5gdjfb6jojpivbl5uek6vf6svlct7dph5q2jwa",
+        "Nonce":0,
+        "Value":"1000",
+        "GasPrice":"3",
+        "GasLimit":"1000",
+        "Method":0,
+        "Params":""
+      },
+      "Signature": {
+        "Type":"secp256k1",
+        "Data":"CGZgFHeA5g38txFq6ojwh63wlFGKhNl/ZUZPgTGfNB1IStobmY4VucPa/KteaxJjhFlfm/DBCjTqzhzFK+tKuwE="
+      }
+    },
+  "id":1
+}
+*/
+```
+
+### Message class
+
+The exported Message class adds some helper functions for constructing valid Filecoin messages
+
+```js
+const { Message } = require('@openworklabs/filecoin-wallet-provider')
+
+const message = new Message({
+  from: 't1hvuzpfdycc6z6mjgbiyaiojikd6wk2vwy7muuei',
+  to: 't1t5gdjfb6jojpivbl5uek6vf6svlct7dph5q2jwa',
+  value: '1000'
+  method: 0
+})
+
+// calculates the message nonce and attaches it to the message for you
+await message.generateNonce()
+console.log(message.encode())
+/*
+  {
+    "To":"t1hvuzpfdycc6z6mjgbiyaiojikd6wk2vwy7muuei",
+    "From":"t1t5gdjfb6jojpivbl5uek6vf6svlct7dph5q2jwa",
+    "Nonce":0,
+    "Value":"1000",
+    "GasPrice":"3",
+    "GasLimit":"1000",
+    "Method":0,
+    "Params":""
+  }
+*/
 ```
 
 ### Design decisions & future
