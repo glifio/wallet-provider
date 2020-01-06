@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js'
 import LotusRpcEngine from './LotusRPCEngine'
 
 export { default as LocalNodeProvider } from './providers/LocalNodeProvider'
+export { default as LedgerProvider } from './providers/LedgerProvider'
 export { default as Message } from './Message'
 
 class Filecoin {

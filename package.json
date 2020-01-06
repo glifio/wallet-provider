@@ -19,6 +19,8 @@
     "@babel/polyfill": "^7.7.0",
     "axios": "^0.19.0",
     "bignumber.js": "^9.0.0",
+    "bluebird": "^3.7.2",
+    "ledger-filecoin-js": "git+ssh://github.com/ZondaX/ledger-filecoin-js.git",
     "obs-store": "^4.0.3"
   },
   "devDependencies": {
