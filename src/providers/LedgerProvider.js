@@ -44,7 +44,8 @@ class LedgerProvider extends FilecoinApp {
     }
     return mapSeries(paths, async path => {
       const response = this.handleErrors(await this.getAddressAndPubKey(path))
-      return response.address.slice(0, -2) + Math.round(Math.random() * 100)
+      // TODO: return response
+      return 't1e2tmlvccdm6zdwxlu5h7mtihs3w23cqs5gg3c4q'
     })
   }
 
