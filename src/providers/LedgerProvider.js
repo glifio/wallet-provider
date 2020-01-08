@@ -17,7 +17,23 @@ class LedgerProvider extends FilecoinApp {
     throw new Error(response.error_message)
   }
 
-  getVersion = async () => this.handleErrors(await super.getVersion())
+  /* getVersion call rejects if it takes too long to respond,
+  meaning the Ledger device is locked */
+  getVersion = () =>
+    new Promise((resolve, reject) => {
+      setTimeout(() => {
+        return reject(new Error('Ledger device locked'))
+      }, 3000)
+
+      setTimeout(async () => {
+        try {
+          const response = this.handleErrors(await super.getVersion())
+          return resolve(response)
+        } catch (err) {
+          return reject(err)
+        }
+      })
+    })
 
   newAccount = () => {}
 
