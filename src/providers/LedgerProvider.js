@@ -43,8 +43,10 @@ class LedgerProvider extends FilecoinApp {
       paths.push([44, 461, 5, 0, i])
     }
     return mapSeries(paths, async path => {
-      const response = this.handleErrors(await this.getAddressAndPubKey(path))
-      return response
+      const { address } = this.handleErrors(
+        await this.getAddressAndPubKey(path),
+      )
+      return address
     })
   }
 

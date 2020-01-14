@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 
-import LotusRpcEngine from './LotusRPCEngine'
+import LotusRpcEngine from '@openworklabs/lotus-jsonrpc-engine'
 
 export { default as LocalNodeProvider } from './providers/LocalNodeProvider'
 export { default as LedgerProvider } from './providers/LedgerProvider'

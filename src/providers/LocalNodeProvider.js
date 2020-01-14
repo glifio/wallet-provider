@@ -1,4 +1,4 @@
-import LotusRpcEngine from '../LotusRPCEngine'
+import LotusRpcEngine from '@openworklabs/lotus-jsonrpc-engine'
 
 class LocalNodeProvider {
   constructor({ apiAddress, token }) {
