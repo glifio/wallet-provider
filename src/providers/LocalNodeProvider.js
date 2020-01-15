@@ -11,8 +11,8 @@ class LocalNodeProvider {
 
   getAccounts = () => this.jsonRpcEngine.request('WalletList')
 
-  sign = message =>
-    this.jsonRpcEngine.request('WalletSignMessage', message.From, message)
+  sign = (from, message) =>
+    this.jsonRpcEngine.request('WalletSignMessage', from, message)
 }
 
 export default LocalNodeProvider

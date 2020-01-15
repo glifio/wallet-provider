@@ -20,7 +20,15 @@ class Filecoin {
     return new BigNumber(balance)
   }
 
-  sendMessage = async signedMessage => {
+  sendMessage = async (message, signature) => {
+    const signedMessage = {
+      Message: message,
+      Signature: {
+        Type: 'secp256k1',
+        Data: signature,
+      },
+    }
+
     const tx = await this.jsonRpcEngine.request('MpoolPush', signedMessage)
     return tx
   }
