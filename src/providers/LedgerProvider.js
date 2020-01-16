@@ -14,6 +14,16 @@ class LedgerProvider extends FilecoinApp {
     ) {
       return response
     }
+    if (
+      response.error_message &&
+      response.error_message
+        .toLowerCase()
+        .includes('transporterror: invalild channel')
+    ) {
+      throw new Error(
+        'Lost connection with Ledger. Please unplug and replug device.',
+      )
+    }
     throw new Error(response.error_message)
   }
 
@@ -22,7 +32,7 @@ class LedgerProvider extends FilecoinApp {
   getVersion = () =>
     new Promise((resolve, reject) => {
       setTimeout(() => {
-        return reject(new Error('Ledger device locked'))
+        return reject(new Error('Ledger device locked or busy'))
       }, 3000)
 
       setTimeout(async () => {
@@ -50,7 +60,10 @@ class LedgerProvider extends FilecoinApp {
     })
   }
 
-  sign = (path, signedMessage) => super.sign(path, signedMessage)
+  sign = async (path, signedMessage) => {
+    const signature = this.handleErrors(await super.sign(path, signedMessage))
+    return signature.toString('base64')
+  }
 }
 
 export default LedgerProvider
