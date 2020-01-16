@@ -1,4 +1,4 @@
-import FilecoinApp from 'ledger-filecoin-js'
+import FilecoinApp from '@zondax/ledger-filecoin-js'
 import { mapSeries } from 'bluebird'
 
 class LedgerProvider extends FilecoinApp {
@@ -50,13 +50,7 @@ class LedgerProvider extends FilecoinApp {
     })
   }
 
-  sign = (path, serializedMessage) => {
-    const serializedMsg = Buffer.from(
-      '875501fd1d0f4dfcd7e99afcb99a8326b7dc459d32c6285501b882619d46558f3d9e316d11b48dcf211327025a01430186a04209c44261a800',
-      'hex',
-    )
-    return super.sign(path, serializedMsg)
-  }
+  sign = (path, signedMessage) => super.sign(path, signedMessage)
 }
 
 export default LedgerProvider

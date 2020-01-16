@@ -123,7 +123,7 @@ const provider = new LocalNodeProvider({
 
 // message is a proper Filecoin message, see section below on messages for more details
 
-const signedMsg = await provider.sign(message)
+const signedMsg = await provider.sign(path, message)
 console.log(signedMsg)
 /*
 {
@@ -166,7 +166,7 @@ const message = new Message({
 
 // calculates the message nonce and attaches it to the message for you
 await message.generateNonce()
-console.log(message.encode())
+console.log(message.toObj())
 /*
   {
     "To":"t1hvuzpfdycc6z6mjgbiyaiojikd6wk2vwy7muuei",
@@ -179,6 +179,8 @@ console.log(message.encode())
     "Params":""
   }
 */
+
+const serializedMsg = await message.serialize()
 ```
 
 ### Design decisions & future

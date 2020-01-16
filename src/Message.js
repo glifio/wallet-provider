@@ -28,7 +28,10 @@ function marshalBigInt(val) {
   const bigIntOnset = new Buffer.alloc(1)
   bigIntOnset[0] = 0
   const buf = bigintToArray(val)
-  return Buffer.concat([bigIntOnset, Uint8Array.from(buf)])
+  return Buffer.concat([
+    Buffer.from(bigIntOnset),
+    Buffer.from(Uint8Array.from(buf)),
+  ])
 }
 
 class Message {
@@ -57,7 +60,7 @@ class Message {
     return true
   }
 
-  encode = () => {
+  toObj = () => {
     if (typeof this.nonce !== 'number')
       throw new Error('Cannot encode message without a nonce')
     const message = {
@@ -68,37 +71,37 @@ class Message {
       Method: this.method,
       GasPrice: '3',
       GasLimit: '1000',
-      Params: [],
+      Params: '',
     }
     return message
   }
 
-  serialize = message => {
-    const answer = []
-    answer.push(decode(message.to))
-    answer.push(decode(message.from))
-    answer.push(message.nonce)
-    answer.push(marshalBigInt(message.value))
-    answer.push(marshalBigInt(message.gasprice))
-    answer.push(marshalBigInt(message.gaslimit))
-    answer.push(message.method)
+  serialize = () =>
+    new Promise(resolve => {
+      const answer = []
+      answer.push(decode(this.to))
+      answer.push(decode(this.from))
+      answer.push(this.nonce)
+      answer.push(marshalBigInt(this.value))
+      answer.push(marshalBigInt('3'))
+      answer.push(marshalBigInt('1000'))
+      answer.push(this.method)
 
-    if (message.params) {
-      answer.push(message.params)
-      return borc.encode(answer)
-    }
+      if (this.params) {
+        answer.push(this.params)
+        return resolve(borc.encode(answer))
+      }
 
-    const emptyParamsHeader = new Buffer.alloc(1)
-    emptyParamsHeader[0] = 64
-    const cborWithEmptyParams = Buffer.concat([
-      borc.encode(answer),
-      emptyParamsHeader,
-    ])
-    // Change the first byte since cbor is encoded w/o params
-    cborWithEmptyParams[0] = 136
-
-    return cborWithEmptyParams
-  }
+      const emptyParamsHeader = new Buffer.alloc(1)
+      emptyParamsHeader[0] = 64
+      const cborWithEmptyParams = Buffer.concat([
+        borc.encode(answer),
+        emptyParamsHeader,
+      ])
+      // Change the first byte since cbor is encoded w/o params
+      cborWithEmptyParams[0] = 136
+      return resolve(cborWithEmptyParams)
+    })
 }
 
 export default Message
