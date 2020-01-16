@@ -61,7 +61,9 @@ class LedgerProvider extends FilecoinApp {
   }
 
   sign = async (path, signedMessage) => {
-    const signature = this.handleErrors(await super.sign(path, signedMessage))
+    const { signature } = this.handleErrors(
+      await super.sign(path, signedMessage),
+    )
     return signature.toString('base64')
   }
 }
