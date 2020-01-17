@@ -47,10 +47,11 @@ class LedgerProvider extends FilecoinApp {
 
   newAccount = () => {}
 
-  getAccounts = async (nStart = 0, nEnd = 5) => {
+  getAccounts = async (nStart = 0, nEnd = 5, network = 't') => {
+    const pathNetworkId = network === 'f' ? 1 : 461
     const paths = []
     for (let i = nStart; i < nEnd; i += 1) {
-      paths.push([44, 461, 5, 0, i])
+      paths.push([44, pathNetworkId, 5, 0, i])
     }
     return mapSeries(paths, async path => {
       const { address } = this.handleErrors(
