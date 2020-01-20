@@ -64,7 +64,7 @@ class LedgerProvider extends FilecoinApp {
   getAccounts = async (nStart = 0, nEnd = 5, network = 't') => {
     this.throwIfBusy()
     this.ledgerBusy = true
-    const pathNetworkId = network === 'f' ? 1 : 461
+    const pathNetworkId = network === 'f' ? 461 : 1
     const paths = []
     for (let i = nStart; i < nEnd; i += 1) {
       paths.push([44, pathNetworkId, 5, 0, i])
