@@ -1,5 +1,4 @@
-import BigNumber from 'bignumber.js'
-
+import FilecoinNumber from '@openworklabs/filecoin-number'
 import LotusRpcEngine from '@openworklabs/lotus-jsonrpc-engine'
 
 export { default as LocalNodeProvider } from './providers/LocalNodeProvider'
@@ -17,7 +16,7 @@ class Filecoin {
 
   getBalance = async address => {
     const balance = await this.jsonRpcEngine.request('WalletBalance', address)
-    return new BigNumber(balance)
+    return new FilecoinNumber(balance, 'attofil')
   }
 
   sendMessage = async (message, signature) => {
