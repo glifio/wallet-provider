@@ -42,6 +42,24 @@ console.log(balance.toString())
 // 1000000000000
 ```
 
+#### getNonce
+
+```js
+const filecoin = new Filecoin(
+  new LocalNodeProvider({
+    apiAddress: 'http://127.0.0.1:1234/rpc/v0',
+    token: process.env.LOTUS_JWT_TOKEN,
+  }),
+  { token: process.env.LOTUS_JWT_TOKEN },
+)
+
+const nonce = await filecoin.getNonce(
+  't1jdlfl73voaiblrvn2yfivvn5ifucwwv5f26nfza',
+)
+console.log(nonce)
+// returns a number representing the nonce
+```
+
 ##### sendMessage
 
 Takes a signed message, and resolves a promise whne the transaction is completed (note in the future this should resolve to the SignedMessage `cid`).
@@ -148,39 +166,6 @@ console.log(signedMsg)
   "id":1
 }
 */
-```
-
-### Message class
-
-The exported Message class adds some helper functions for constructing valid Filecoin messages
-
-```js
-const { Message } = require('@openworklabs/filecoin-wallet-provider')
-
-const message = new Message({
-  from: 't1hvuzpfdycc6z6mjgbiyaiojikd6wk2vwy7muuei',
-  to: 't1t5gdjfb6jojpivbl5uek6vf6svlct7dph5q2jwa',
-  value: '1000'
-  method: 0
-})
-
-// calculates the message nonce and attaches it to the message for you
-await message.generateNonce()
-console.log(message.toObj())
-/*
-  {
-    "To":"t1hvuzpfdycc6z6mjgbiyaiojikd6wk2vwy7muuei",
-    "From":"t1t5gdjfb6jojpivbl5uek6vf6svlct7dph5q2jwa",
-    "Nonce":0,
-    "Value":"1000",
-    "GasPrice":"3",
-    "GasLimit":"1000",
-    "Method":0,
-    "Params":""
-  }
-*/
-
-const serializedMsg = await message.serialize()
 ```
 
 ### Design decisions & future
