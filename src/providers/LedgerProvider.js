@@ -70,10 +70,10 @@ class LedgerProvider extends FilecoinApp {
       paths.push([44, pathNetworkId, 5, 0, i])
     }
     const addresses = await mapSeries(paths, async path => {
-      const { address } = this.handleErrors(
-        await this.getAddressAndPubKey(path),
+      const { addrString } = this.handleErrors(
+        await super.getAddressAndPubKey(path),
       )
-      return address
+      return addrString
     })
     this.ledgerBusy = false
     return addresses
