@@ -1,4 +1,4 @@
-import FilecoinApp from '@zondax/ledger-filecoin-js'
+import FilecoinApp from '@zondax/ledger-filecoin'
 import { mapSeries } from 'bluebird'
 
 class LedgerProvider extends FilecoinApp {
