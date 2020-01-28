@@ -1,6 +1,6 @@
 {
   "name": "@openworklabs/filecoin-wallet-provider",
-  "version": "0.0.6",
+  "version": "0.0.8",
   "description": "a javascript package to send filecoin to addresses",
   "main": "./dist/index.js",
   "browser": "./lib/index.js",
@@ -17,10 +17,10 @@
   "license": "(Apache-2.0 OR MIT)",
   "dependencies": {
     "@babel/polyfill": "^7.7.0",
-    "@openworklabs/lotus-jsonrpc-engine": "0.0.5",
-    "@zondax/ledger-filecoin-js": "git+ssh://github.com/ZondaX/ledger-filecoin-js.git",
+    "@openworklabs/filecoin-number": "^0.0.1",
+    "@openworklabs/lotus-jsonrpc-engine": "^0.0.5",
+    "@zondax/ledger-filecoin": "^0.0.2",
     "axios": "^0.19.0",
-    "bignumber.js": "^9.0.0",
     "bluebird": "^3.7.2",
     "borc": "^2.1.1",
     "obs-store": "^4.0.3"
