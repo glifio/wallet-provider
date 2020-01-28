@@ -1,8 +1,7 @@
 /* eslint-env mocha */
 const { expect } = require('chai')
-const { Filecoin, LocalNodeProvider } = require('../')
-
-// TODO: add tests for valid and invalid message construction
+const Filecoin = require('../').default
+const LocalNodeProvider = require('../dist/providers/LocalNodeProvider').default
 
 describe('provider', () => {
   describe('constructor', () => {
