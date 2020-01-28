@@ -11,7 +11,8 @@
     "build-node": "babel ./src --out-dir ./dist --source-maps --copy-files",
     "build": "npm run build-node && npm run build-browser && npm run build-module",
     "prepublishOnly": "npm run build",
-    "test": "npm run build && mocha"
+    "test": "npm run build && aegir test",
+    "test:node": "npm run build && aegir test -t node"
   },
   "author": "",
   "license": "(Apache-2.0 OR MIT)",
