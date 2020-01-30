@@ -1,6 +1,6 @@
 {
   "name": "@openworklabs/filecoin-wallet-provider",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "a javascript package to send filecoin to addresses",
   "main": "./dist/index.js",
   "browser": "./lib/index.js",
