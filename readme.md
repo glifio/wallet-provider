@@ -11,13 +11,12 @@ import Filecoin, {
   LocalNodeProvider,
 } from '@openworklabs/filecoin-wallet-provider'
 
-const filecoin = new Filecoin(
-  new LocalNodeProvider({
-    apiAddress: 'http://127.0.0.1:1234/rpc/v0',
-    token: process.env.LOTUS_JWT_TOKEN,
-  }),
-  { token: process.env.LOTUS_JWT_TOKEN },
-)
+const config = {
+  apiAddress: process.env.API_ADDRESS // defaults to 'http://127.0.0.1:1234/rpc/v0',
+  token: process.env.LOTUS_JWT_TOKEN, // required
+}
+
+const filecoin = new Filecoin(new LocalNodeProvider(config), config)
 ```
 
 ### Methods:
@@ -27,13 +26,11 @@ const filecoin = new Filecoin(
 Returns a promise that resolves to a javascript [bignumber.js](https://github.com/MikeMcl/bignumber.js/) object with the accounts balance:
 
 ```js
-const filecoin = new Filecoin(
-  new LocalNodeProvider({
-    apiAddress: 'http://127.0.0.1:1234/rpc/v0',
-    token: process.env.LOTUS_JWT_TOKEN,
-  }),
-  { token: process.env.LOTUS_JWT_TOKEN },
-)
+const config = {
+  apiAddress: process.env.API_ADDRESS // defaults to 'http://127.0.0.1:1234/rpc/v0',
+  token: process.env.LOTUS_JWT_TOKEN, // required
+}
+const filecoin = new Filecoin(new LocalNodeProvider(config), config)
 
 const balance = await filecoin.getBalance(
   't1jdlfl73voaiblrvn2yfivvn5ifucwwv5f26nfza',
@@ -45,13 +42,11 @@ console.log(balance.toString())
 #### getNonce
 
 ```js
-const filecoin = new Filecoin(
-  new LocalNodeProvider({
-    apiAddress: 'http://127.0.0.1:1234/rpc/v0',
-    token: process.env.LOTUS_JWT_TOKEN,
-  }),
-  { token: process.env.LOTUS_JWT_TOKEN },
-)
+const config = {
+  apiAddress: process.env.API_ADDRESS // defaults to 'http://127.0.0.1:1234/rpc/v0',
+  token: process.env.LOTUS_JWT_TOKEN, // required
+}
+const filecoin = new Filecoin(new LocalNodeProvider(config), config)
 
 const nonce = await filecoin.getNonce(
   't1jdlfl73voaiblrvn2yfivvn5ifucwwv5f26nfza',
@@ -65,13 +60,11 @@ console.log(nonce)
 Takes a signed message, and resolves a promise whne the transaction is completed (note in the future this should resolve to the SignedMessage `cid`).
 
 ```js
-const filecoin = new Filecoin(
-  new LocalNodeProvider({
-    apiAddress: 'http://127.0.0.1:1234/rpc/v0',
-    token: process.env.LOTUS_JWT_TOKEN,
-  }),
-  { token: process.env.LOTUS_JWT_TOKEN },
-)
+const config = {
+  apiAddress: process.env.API_ADDRESS // defaults to 'http://127.0.0.1:1234/rpc/v0',
+  token: process.env.LOTUS_JWT_TOKEN, // required
+}
+const filecoin = new Filecoin(new LocalNodeProvider(config), config)
 
 // note, see section below on signedMessages
 await filecoin.sendMessage(signedMessage)
@@ -80,13 +73,11 @@ await filecoin.sendMessage(signedMessage)
 #### Wallet methods exposed from the Provider class (more info below on Provider class)
 
 ```js
-const filecoin = new Filecoin(
-  new LocalNodeProvider({
-    apiAddress: 'http://127.0.0.1:1234/rpc/v0',
-    token: process.env.LOTUS_JWT_TOKEN,
-  }),
-  { token: process.env.LOTUS_JWT_TOKEN },
-)
+const config = {
+  apiAddress: process.env.API_ADDRESS // defaults to 'http://127.0.0.1:1234/rpc/v0',
+  token: process.env.LOTUS_JWT_TOKEN, // required
+}
+const filecoin = new Filecoin(new LocalNodeProvider(config), config)
 
 await filecoin.wallet.sign(message) // returns a signed message
 await filecoin.wallet.getAccounts() // ['t1jdlfl73voaiblrvn2yfivvn5ifucwwv5f26nfza', 't1hvuzpfdycc6z6mjgbiyaiojikd6wk2vwy7muuei']
