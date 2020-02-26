@@ -91,8 +91,9 @@ class LedgerProvider extends FilecoinApp {
   showAddressAndPubKey = async path => {
     this.throwIfBusy()
     this.ledgerBusy = true
-    await super.showAddressAndPubKey(path)
+    const res = this.handleErrors(await super.showAddressAndPubKey(path))
     this.ledgerBusy = false
+    return res
   }
 }
 
