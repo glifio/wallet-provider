@@ -13,7 +13,7 @@ const WORDLISTS = [
   'italian',
 ]
 
-const toJSON = async content => {
+const toJSON = content => {
   return content
     .trim()
     .split('\n')
@@ -30,7 +30,7 @@ const download = async () => {
       `https://raw.githubusercontent.com/bitcoin/bips/master/bip-0039/${name}.txt`,
     )
 
-    wordlists[name] = await toJSON(raw)
+    wordlists[name] = toJSON(raw)
   })
 
   await Promise.all(promises)
@@ -38,7 +38,7 @@ const download = async () => {
   return wordlists
 }
 
-const validateWord = async (word, wordlists) => {
+const validateWord = (word, wordlists) => {
   let match
 
   Object.keys(wordlists).forEach(key => {

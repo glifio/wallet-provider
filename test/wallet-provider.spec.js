@@ -26,18 +26,18 @@ describe('bip39', () => {
       wordLists = await download()
     })
 
-    it('should validate a valid english word', async () => {
-      const valid = await validateWord('work', wordLists)
+    it('should validate a valid english word', () => {
+      const valid = validateWord('work', wordLists)
       expect(valid).to.equal(true)
     })
 
-    it('should validate a valid chinese word', async () => {
-      const valid = await validateWord('殼', wordLists)
+    it('should validate a valid chinese word', () => {
+      const valid = validateWord('殼', wordLists)
       expect(valid).to.equal(true)
     })
 
-    it('should invalidate an invalid word', async () => {
-      const valid = await validateWord('invalid', wordLists)
+    it('should invalidate an invalid word', () => {
+      const valid = validateWord('invalid', wordLists)
       expect(valid).to.equal(false)
     })
   })
