@@ -2,6 +2,7 @@
 const { expect } = require('chai')
 const Filecoin = require('../').default
 const LocalNodeProvider = require('../dist/providers/LocalNodeProvider').default
+const { download, validateWord } = require('../dist/utils/bip39/wordlists')
 
 describe('provider', () => {
   describe('constructor', () => {
@@ -14,6 +15,30 @@ describe('provider', () => {
         { token: process.env.LOTUS_JWT_TOKEN },
       )
       expect(filecoin).to.be.instanceOf(Filecoin)
+    })
+  })
+})
+
+describe('bip39', () => {
+  describe('word validator', async () => {
+    let wordLists
+    before(async () => {
+      wordLists = await download()
+    })
+
+    it('should validate a valid english word', async () => {
+      const valid = await validateWord('work', wordLists)
+      expect(valid).to.equal(true)
+    })
+
+    it('should validate a valid chinese word', async () => {
+      const valid = await validateWord('殼', wordLists)
+      expect(valid).to.equal(true)
+    })
+
+    it('should invalidate an invalid word', async () => {
+      const valid = await validateWord('invalid', wordLists)
+      expect(valid).to.equal(false)
     })
   })
 })

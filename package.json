@@ -22,6 +22,7 @@
     "@openworklabs/lotus-jsonrpc-engine": "^0.0.5",
     "@zondax/ledger-filecoin": "^0.10.1",
     "axios": "^0.19.0",
+    "bent": "^7.1.0",
     "bluebird": "^3.7.2",
     "borc": "^2.1.1",
     "obs-store": "^4.0.3"
