@@ -48,8 +48,5 @@ jobs:
       script:
         - npm run build && npx aegir test -t electron-renderer --bail
 
-env:
-  - YARN_GPG=no
-
 notifications:
   email: false
