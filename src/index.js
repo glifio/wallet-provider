@@ -35,6 +35,17 @@ class Filecoin {
     if (!address) throw new Error('No address provided.')
     return this.jsonRpcEngine.request('MpoolGetNonce', address)
   }
+
+  estimateGas = async message => {
+    if (!message) throw new Error('No message provided.')
+    const stateCallRes = await this.jsonRpcEngine.request(
+      'StateCall',
+      message,
+      null,
+    )
+    if (stateCallRes.Error) throw new Error(stateCallRes.Error)
+    return new FilecoinNumber(stateCallRes.GasUsed, 'attofil')
+  }
 }
 
 export default Filecoin
