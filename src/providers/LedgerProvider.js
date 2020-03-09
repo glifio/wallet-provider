@@ -80,11 +80,11 @@ class LedgerProvider extends FilecoinApp {
     return addresses
   }
 
-  sign = async (path, signedMessage) => {
+  sign = async (path, unsignedMessage) => {
     this.throwIfBusy()
     this.ledgerBusy = true
     const { signature_compact } = this.handleErrors(
-      await super.sign(convertPathFmt(path), signedMessage),
+      await super.sign(convertPathFmt(path), unsignedMessage),
     )
     return signature_compact.toString('base64')
   }
