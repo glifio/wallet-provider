@@ -1,6 +1,5 @@
 import FilecoinApp from '@zondax/ledger-filecoin'
 import { mapSeries } from 'bluebird'
-import convertPathFmt from '../utils/convertPathFmt'
 
 class LedgerProvider extends FilecoinApp {
   constructor(transport) {
@@ -72,7 +71,7 @@ class LedgerProvider extends FilecoinApp {
     }
     const addresses = await mapSeries(paths, async path => {
       const { addrString } = this.handleErrors(
-        await super.getAddressAndPubKey(convertPathFmt(path)),
+        await super.getAddressAndPubKey(path),
       )
       return addrString
     })
@@ -80,11 +79,11 @@ class LedgerProvider extends FilecoinApp {
     return addresses
   }
 
-  sign = async (path, unsignedMessage) => {
+  sign = async (path, filecoinMessage) => {
     this.throwIfBusy()
     this.ledgerBusy = true
     const { signature_compact } = this.handleErrors(
-      await super.sign(convertPathFmt(path), unsignedMessage),
+      await super.sign(path, await filecoinMessage.serialize()),
     )
     return signature_compact.toString('base64')
   }
@@ -92,9 +91,7 @@ class LedgerProvider extends FilecoinApp {
   showAddressAndPubKey = async path => {
     this.throwIfBusy()
     this.ledgerBusy = true
-    const res = this.handleErrors(
-      await super.showAddressAndPubKey(convertPathFmt(path)),
-    )
+    const res = this.handleErrors(await super.showAddressAndPubKey(path))
     this.ledgerBusy = false
     return res
   }

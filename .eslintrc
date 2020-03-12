@@ -5,6 +5,7 @@
   "rules": {
     "no-await-in-loop": 0,
     "consistent-return": 0,
-    "camelcase": 0
+    "camelcase": 0,
+    "import/prefer-default-export": 0
   }
 }
