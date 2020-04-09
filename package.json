@@ -12,7 +12,7 @@
     "build": "npm run build-node && npm run build-browser && npm run build-module",
     "prepublishOnly": "npm run build",
     "test": "npm run build && jest",
-    "test:node": "npm run build && aegir test -t node"
+    "test:watch": "npm run build && jest --watch"
   },
   "author": "",
   "license": "(Apache-2.0 OR MIT)",
@@ -22,10 +22,8 @@
     "@openworklabs/filecoin-number": "^0.0.1",
     "@openworklabs/lotus-jsonrpc-engine": "^0.0.5",
     "@zondax/ledger-filecoin": "0.11.0",
-    "axios": "^0.19.0",
     "bluebird": "^3.7.2",
-    "borc": "^2.1.2",
-    "obs-store": "^4.0.3"
+    "borc": "^2.1.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.7.4",

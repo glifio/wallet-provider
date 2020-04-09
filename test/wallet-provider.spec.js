@@ -48,7 +48,12 @@ describe('provider', () => {
         'WalletBalance',
         't0112',
       )
-      expect(balance.toFil()).toBeTruthy()
+      expect(balance.isGreaterThanOrEqualTo(0)).toBeTruthy()
+    })
+
+    it('should return an instance of filecoin number', async () => {
+      const balance = await filecoin.getBalance('t0112')
+      expect(balance instanceof FilecoinNumber).toBeTruthy()
     })
 
     it('should throw when a bad address is passed', async () => {
@@ -98,7 +103,7 @@ describe('provider', () => {
       await expect(filecoin.getNonce()).rejects.toThrow()
     })
 
-    it('should call request with MpoolPush and a signed message', async () => {
+    it('should call request with getNonce and an address', async () => {
       await expect(filecoin.getNonce('t012'))
       expect(filecoin.jsonRpcEngine.request).toHaveBeenCalledWith(
         'MpoolGetNonce',
@@ -106,10 +111,9 @@ describe('provider', () => {
       )
     })
 
-    it('should return string of numbers from the mock jsonrpc engine', async () => {
-      await expect(filecoin.getNonce('t0123')).resolves.toEqual(
-        expect.stringMatching(/^\d+$/),
-      )
+    it('should return a number', async () => {
+      const nonce = await filecoin.getNonce('t0123')
+      expect(typeof nonce === 'number').toBe(true)
     })
   })
 
@@ -118,7 +122,7 @@ describe('provider', () => {
       await expect(filecoin.estimateGas()).rejects.toThrow()
     })
 
-    it('should call request with MpoolPush and a signed message', async () => {
+    it('should call request with StateCall, the message, and null as the tipset', async () => {
       await expect(filecoin.estimateGas(message))
       expect(filecoin.jsonRpcEngine.request).toHaveBeenCalledWith(
         'StateCall',
