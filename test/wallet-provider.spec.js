@@ -1,19 +1,126 @@
-/* eslint-env mocha */
-const { expect } = require('chai')
-const Filecoin = require('../').default
-const LocalNodeProvider = require('../dist/providers/LocalNodeProvider').default
+const Filecoin = require('..').default
+const { BigNumber } = require('@openworklabs/filecoin-number')
+const FilecoinNumber = require('@openworklabs/filecoin-number')
+const Message = require('@openworklabs/filecoin-message')
+
+const testSubProviderInstance = {
+  getAccounts: jest.fn().mockImplementation(() => {}),
+  sign: jest.fn().mockImplementation(() => {}),
+}
+
+const message = new Message({
+  to: 't01',
+  from: 't02',
+  value: new BigNumber('1'),
+  method: 0,
+  gasPrice: new BigNumber('1000'),
+  gasLimit: 100,
+  nonce: 1,
+})
 
 describe('provider', () => {
+  let filecoin
+  beforeAll(() => {
+    filecoin = new Filecoin(testSubProviderInstance)
+  })
+
   describe('constructor', () => {
     it('should create Filecoin object', async () => {
-      const filecoin = new Filecoin(
-        new LocalNodeProvider({
-          apiAddress: 'http://127.0.0.1:1234/rpc/v0',
-          token: process.env.LOTUS_JWT_TOKEN,
-        }),
-        { token: process.env.LOTUS_JWT_TOKEN },
+      expect(filecoin).toBeInstanceOf(Filecoin)
+    })
+  })
+
+  describe('getBalance', () => {
+    it('should call WalletBalance with address', async () => {
+      const balance = await filecoin.getBalance('t0112')
+      expect(filecoin.jsonRpcEngine.request).toHaveBeenCalled()
+      expect(filecoin.jsonRpcEngine.request).toHaveBeenCalledWith(
+        'WalletBalance',
+        't0112',
       )
-      expect(filecoin).to.be.instanceOf(Filecoin)
+      expect(balance.toFil()).toBeTruthy()
+    })
+
+    it('should throw when a bad address is passed', async () => {
+      await expect(filecoin.getBalance('r011')).rejects.toThrow()
+    })
+
+    it('should throw when an object is passed as an address', async () => {
+      expect(filecoin.getBalance({ key: 'val' })).rejects.toThrow()
+    })
+
+    it('should throw when null is passed as an address', async () => {
+      expect(filecoin.getBalance(null)).rejects.toThrow()
+    })
+  })
+
+  describe('sendMessage', () => {
+    it('should throw with the wrong number of params', async () => {
+      await expect(filecoin.sendMessage()).rejects.toThrow()
+      await expect(filecoin.sendMessage(message)).rejects.toThrow()
+    })
+
+    it('should return the tx', async () => {
+      await expect(filecoin.sendMessage(message, '123')).resolves.toBeTruthy()
+      expect(filecoin.jsonRpcEngine.request).toHaveBeenCalledWith('MpoolPush', {
+        Message: message,
+        Signature: {
+          Type: 'secp256k1',
+          Data: '123',
+        },
+      })
+    })
+
+    it('should call request with MpoolPush and a signed message', async () => {
+      expect(filecoin.jsonRpcEngine.request).toHaveBeenCalledWith('MpoolPush', {
+        Message: message,
+        Signature: {
+          Type: 'secp256k1',
+          Data: '123',
+        },
+      })
+    })
+  })
+
+  describe('getNonce', () => {
+    it('should throw if an invalid address is provided', async () => {
+      await expect(filecoin.getNonce('e01')).rejects.toThrow()
+      await expect(filecoin.getNonce()).rejects.toThrow()
+    })
+
+    it('should call request with MpoolPush and a signed message', async () => {
+      await expect(filecoin.getNonce('t012'))
+      expect(filecoin.jsonRpcEngine.request).toHaveBeenCalledWith(
+        'MpoolGetNonce',
+        't012',
+      )
+    })
+
+    it('should return string of numbers from the mock jsonrpc engine', async () => {
+      await expect(filecoin.getNonce('t0123')).resolves.toEqual(
+        expect.not.stringMatching('abcde'),
+      )
+    })
+  })
+
+  describe('estimateGas', () => {
+    it('should throw if no message is provided', async () => {
+      await expect(filecoin.estimateGas()).rejects.toThrow()
+    })
+
+    it('should call request with MpoolPush and a signed message', async () => {
+      await expect(filecoin.estimateGas(message))
+      expect(filecoin.jsonRpcEngine.request).toHaveBeenCalledWith(
+        'StateCall',
+        message,
+        null,
+      )
+    })
+
+    it('should return a FilecoinNumber instance', async () => {
+      await expect(filecoin.estimateGas(message)).resolves.toBeInstanceOf(
+        FilecoinNumber,
+      )
     })
   })
 })
