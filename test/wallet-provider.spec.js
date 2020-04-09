@@ -27,6 +27,16 @@ describe('provider', () => {
   describe('constructor', () => {
     it('should create Filecoin object', async () => {
       expect(filecoin).toBeInstanceOf(Filecoin)
+      expect(filecoin.wallet).toBeTruthy()
+      expect(filecoin.wallet.getAccounts).toBeTruthy()
+      expect(filecoin.jsonRpcEngine).toBeTruthy()
+      expect(filecoin.jsonRpcEngine.request).toBeTruthy()
+    })
+
+    it('should throw when not passed a provider', async () => {
+      expect(() => {
+        new Filecoin()
+      }).toThrow()
     })
   })
 

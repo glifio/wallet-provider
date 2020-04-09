@@ -8,9 +8,8 @@ export * from './utils'
 
 class Filecoin {
   constructor(provider, { apiAddress, token } = {}) {
-    // if (!provider) throw new Error("must pass a provider...")
+    if (!provider) throw new Error('No provider provided.')
     this.wallet = provider
-    this.test = 'test'
     this.jsonRpcEngine = new LotusRpcEngine({
       apiAddress: apiAddress || 'http://127.0.0.1:1234/rpc/v0',
       token,
