@@ -9,6 +9,7 @@ MockLotusJsonrpcEngine.prototype.request = jest
     if (method === 'MpoolPush')
       return 'bafy2bzacea5j7rc47gt2nrw55rghzyixzhycwb46ahexbsfxhllncbmvj7ky4'
     if (method === 'StateCall') return { GasUsed: '10000' }
+    if (method === 'MpoolGetNonce') return '1'
   })
 
 module.exports = MockLotusJsonrpcEngine

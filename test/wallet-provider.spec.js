@@ -108,7 +108,7 @@ describe('provider', () => {
 
     it('should return string of numbers from the mock jsonrpc engine', async () => {
       await expect(filecoin.getNonce('t0123')).resolves.toEqual(
-        expect.not.stringMatching('abcde'),
+        expect.stringMatching(/^\d+$/),
       )
     })
   })
