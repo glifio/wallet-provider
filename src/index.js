@@ -40,7 +40,7 @@ class Filecoin {
   getNonce = async address => {
     if (!address) throw new Error('No address provided.')
     checkAddressString(address)
-    return this.jsonRpcEngine.request('MpoolGetNonce', address)
+    return Number(this.jsonRpcEngine.request('MpoolGetNonce', address))
   }
 
   estimateGas = async message => {
