@@ -1,5 +1,6 @@
 import FilecoinNumber from '@openworklabs/filecoin-number'
 import LotusRpcEngine from '@openworklabs/lotus-jsonrpc-engine'
+import { checkAddressString } from '@openworklabs/filecoin-address'
 
 export { default as LocalNodeProvider } from './providers/LocalNodeProvider'
 export { default as LedgerProvider } from './providers/LedgerProvider'
@@ -7,6 +8,7 @@ export * from './utils'
 
 class Filecoin {
   constructor(provider, { apiAddress, token } = {}) {
+    if (!provider) throw new Error('No provider provided.')
     this.wallet = provider
     this.jsonRpcEngine = new LotusRpcEngine({
       apiAddress: apiAddress || 'http://127.0.0.1:1234/rpc/v0',
@@ -15,11 +17,14 @@ class Filecoin {
   }
 
   getBalance = async address => {
+    checkAddressString(address)
     const balance = await this.jsonRpcEngine.request('WalletBalance', address)
     return new FilecoinNumber(balance, 'attofil')
   }
 
   sendMessage = async (message, signature) => {
+    if (!message) throw new Error('No message provided.')
+    if (!signature) throw new Error('No signature provided.')
     const signedMessage = {
       Message: message,
       Signature: {
@@ -34,7 +39,8 @@ class Filecoin {
 
   getNonce = async address => {
     if (!address) throw new Error('No address provided.')
-    return this.jsonRpcEngine.request('MpoolGetNonce', address)
+    checkAddressString(address)
+    return Number(this.jsonRpcEngine.request('MpoolGetNonce', address))
   }
 
   estimateGas = async message => {
