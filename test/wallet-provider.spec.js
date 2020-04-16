@@ -115,6 +115,12 @@ describe('provider', () => {
       const nonce = await filecoin.getNonce('t0123')
       expect(typeof nonce === 'number').toBe(true)
     })
+
+    it('should return 0 if the error received is ', async () => {
+      // this address is hardcoded to throw the right error type
+      const nonce = await filecoin.getNonce('t0999')
+      expect(nonce).toBe(0)
+    })
   })
 
   describe('estimateGas', () => {
