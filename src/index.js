@@ -64,7 +64,7 @@ class Filecoin {
       null,
     )
     if (stateCallRes.Error) throw new Error(stateCallRes.Error)
-    return new FilecoinNumber(stateCallRes.GasUsed, 'attofil')
+    return new FilecoinNumber(stateCallRes.MsgRct.GasUsed, 'attofil')
   }
 }
 
