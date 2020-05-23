@@ -28,7 +28,8 @@ class Filecoin {
     const signedMessage = {
       Message: message,
       Signature: {
-        Type: 'secp256k1',
+        // wallet only supports secp256k1 keys for now
+        Type: 1,
         Data: signature,
       },
     }
