@@ -3,7 +3,6 @@ import LotusRpcEngine from '@openworklabs/lotus-jsonrpc-engine'
 import { checkAddressString } from '@openworklabs/filecoin-address'
 
 export { default as LocalNodeProvider } from './providers/LocalNodeProvider'
-export { default as LedgerProvider } from './providers/LedgerProvider'
 export * from './utils'
 
 class Filecoin {
@@ -28,7 +27,8 @@ class Filecoin {
     const signedMessage = {
       Message: message,
       Signature: {
-        Type: 'secp256k1',
+        // wallet only supports secp256k1 keys for now
+        Type: 1,
         Data: signature,
       },
     }
@@ -64,7 +64,7 @@ class Filecoin {
       null,
     )
     if (stateCallRes.Error) throw new Error(stateCallRes.Error)
-    return new FilecoinNumber(stateCallRes.GasUsed, 'attofil')
+    return new FilecoinNumber(stateCallRes.MsgRct.GasUsed, 'attofil')
   }
 }
 
