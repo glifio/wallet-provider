@@ -80,7 +80,7 @@ describe('provider', () => {
       expect(filecoin.jsonRpcEngine.request).toHaveBeenCalledWith('MpoolPush', {
         Message: message,
         Signature: {
-          Type: 'secp256k1',
+          Type: 1,
           Data: '123',
         },
       })
@@ -90,7 +90,7 @@ describe('provider', () => {
       expect(filecoin.jsonRpcEngine.request).toHaveBeenCalledWith('MpoolPush', {
         Message: message,
         Signature: {
-          Type: 'secp256k1',
+          Type: 1,
           Data: '123',
         },
       })
