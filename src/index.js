@@ -3,7 +3,6 @@ import LotusRpcEngine from '@openworklabs/lotus-jsonrpc-engine'
 import { checkAddressString } from '@openworklabs/filecoin-address'
 
 export { default as LocalNodeProvider } from './providers/LocalNodeProvider'
-export { default as LedgerProvider } from './providers/LedgerProvider'
 export * from './utils'
 
 class Filecoin {
