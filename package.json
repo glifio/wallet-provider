@@ -20,7 +20,7 @@
     "@babel/polyfill": "^7.8.7",
     "@openworklabs/filecoin-address": "0.0.4",
     "@openworklabs/filecoin-number": "^0.0.1",
-    "@openworklabs/lotus-jsonrpc-engine": "^0.0.5",
+    "@openworklabs/lotus-jsonrpc-engine": "0.1.2",
     "@zondax/ledger-filecoin": "0.11.0",
     "bluebird": "^3.7.2",
     "borc": "^2.1.2"
