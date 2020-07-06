@@ -58,6 +58,7 @@ class Filecoin {
 
   estimateGas = async message => {
     if (!message) throw new Error('No message provided.')
+    message.from = 't01'
     const stateCallRes = await this.jsonRpcEngine.request(
       'StateCall',
       message,

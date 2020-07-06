@@ -1,6 +1,6 @@
 {
   "name": "@openworklabs/filecoin-wallet-provider",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "description": "a javascript package to send filecoin to addresses",
   "main": "./dist/index.js",
   "browser": "./lib/index.js",
@@ -41,7 +41,6 @@
     "eslint-plugin-react": "^7.19.0",
     "eslint-plugin-react-hooks": "^1.7.0",
     "jest": "^25.3.0",
-    "mocha": "^6.2.3",
     "prettier": "1.19.1"
   },
   "files": [
