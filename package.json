@@ -1,6 +1,6 @@
 {
   "name": "@openworklabs/filecoin-wallet-provider",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "description": "a javascript package to send filecoin to addresses",
   "main": "./dist/index.js",
   "browser": "./lib/index.js",
@@ -17,11 +17,11 @@
   "author": "",
   "license": "(Apache-2.0 OR MIT)",
   "dependencies": {
-    "@babel/polyfill": "^7.8.7",
+    "@babel/polyfill": "7.8.7",
     "@openworklabs/filecoin-address": "0.0.4",
-    "@openworklabs/filecoin-number": "^0.0.1",
+    "@openworklabs/filecoin-number": "0.0.7",
     "@openworklabs/lotus-jsonrpc-engine": "0.1.2",
-    "bluebird": "^3.7.2"
+    "bluebird": "3.7.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.7.4",
@@ -29,7 +29,7 @@
     "@babel/plugin-proposal-class-properties": "^7.7.4",
     "@babel/plugin-proposal-object-rest-spread": "^7.9.5",
     "@babel/preset-env": "^7.9.5",
-    "@openworklabs/filecoin-message": "0.0.10",
+    "@openworklabs/filecoin-message": "0.0.13",
     "babel-eslint": "^10.1.0",
     "chai": "^4.2.0",
     "cross-env": "^6.0.3",

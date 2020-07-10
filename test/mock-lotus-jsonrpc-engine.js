@@ -14,6 +14,14 @@ MockLotusJsonrpcEngine.prototype.request = jest
         )
       return '1'
     }
+    if (method === 'StateLookupID') {
+      if (args[0] === 't0999') {
+        throw new Error(
+          'resolution lookup failed (t0999): resolve address t0999: address not found',
+        )
+      }
+      return
+    }
   })
 
 module.exports = MockLotusJsonrpcEngine

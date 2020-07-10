@@ -1,6 +1,6 @@
 const Filecoin = require('..').default
 const { BigNumber } = require('@openworklabs/filecoin-number')
-const FilecoinNumber = require('@openworklabs/filecoin-number')
+const { FilecoinNumber } = require('@openworklabs/filecoin-number')
 const Message = require('@openworklabs/filecoin-message')
 
 const testSubProviderInstance = {
@@ -139,14 +139,57 @@ describe('provider', () => {
       await expect(filecoin.estimateGas()).rejects.toThrow()
     })
 
-    test('should call request with StateCall, the modified message, and null as the tipset', async () => {
+    test('should call request with StateCall, the message, and null as the tipset', async () => {
       await filecoin.estimateGas(message)
-      expect(filecoin.jsonRpcEngine.request).toHaveBeenCalledWith(
-        'StateCall',
-        message,
-        null,
+      expect(filecoin.jsonRpcEngine.request.mock.calls[1][1].To).toBe(
+        message.encode().To,
       )
-      expect(filecoin.jsonRpcEngine.request.mock.calls[0][1].from).toBe('t01')
+      expect(filecoin.jsonRpcEngine.request.mock.calls[1][1].Value).toBe(
+        message.encode().Value,
+      )
+      expect(filecoin.jsonRpcEngine.request.mock.calls[1][1].Nonce).toBe(
+        message.encode().Nonce,
+      )
+      expect(filecoin.jsonRpcEngine.request.mock.calls[1][1].Method).toBe(
+        message.encode().Method,
+      )
+      expect(filecoin.jsonRpcEngine.request.mock.calls[1][1].Params).toBe(
+        message.encode().Params,
+      )
+
+      expect(filecoin.jsonRpcEngine.request.mock.calls[1][1].From).toBe(
+        message.encode().From,
+      )
+    })
+
+    test('should call request with StateCall, a modified message when the actor does not exist, and null as the tipset', async () => {
+      const message = new Message({
+        to: 't01',
+        from: 't0999',
+        value: new BigNumber('1'),
+        method: 0,
+        gasPrice: new BigNumber('1000'),
+        gasLimit: 100,
+        nonce: 1,
+      })
+      await filecoin.estimateGas(message)
+      expect(filecoin.jsonRpcEngine.request.mock.calls[1][1].To).toBe(
+        message.encode().To,
+      )
+      expect(filecoin.jsonRpcEngine.request.mock.calls[1][1].Value).toBe(
+        message.encode().Value,
+      )
+      expect(filecoin.jsonRpcEngine.request.mock.calls[1][1].Nonce).toBe(
+        message.encode().Nonce,
+      )
+      expect(filecoin.jsonRpcEngine.request.mock.calls[1][1].Method).toBe(
+        message.encode().Method,
+      )
+      expect(filecoin.jsonRpcEngine.request.mock.calls[1][1].Params).toBe(
+        message.encode().Params,
+      )
+
+      expect(filecoin.jsonRpcEngine.request.mock.calls[1][1].From).toBe('t01')
     })
 
     test('should return a FilecoinNumber instance', async () => {
