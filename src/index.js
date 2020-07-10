@@ -1,4 +1,4 @@
-import FilecoinNumber from '@openworklabs/filecoin-number'
+import { FilecoinNumber } from '@openworklabs/filecoin-number'
 import LotusRpcEngine from '@openworklabs/lotus-jsonrpc-engine'
 import { checkAddressString } from '@openworklabs/filecoin-address'
 
@@ -58,10 +58,19 @@ class Filecoin {
 
   estimateGas = async message => {
     if (!message) throw new Error('No message provided.')
-    message.from = 't01'
+    const encodedMsg = message.encode()
+    try {
+      // state call errs if the from address does not exist on chain yet, lookup from actor ID to know this for sure
+      await this.jsonRpcEngine.request('StateLookupID', encodedMsg.From, null)
+    } catch (err) {
+      // if from actor doesnt exist, use a hardcoded known actor address
+      if (err.message.toLowerCase().includes('address not found')) {
+        encodedMsg.From = 't01'
+      }
+    }
     const stateCallRes = await this.jsonRpcEngine.request(
       'StateCall',
-      message,
+      encodedMsg,
       null,
     )
     if (stateCallRes.Error) throw new Error(stateCallRes.Error)
