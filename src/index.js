@@ -58,19 +58,19 @@ class Filecoin {
 
   estimateGas = async message => {
     if (!message) throw new Error('No message provided.')
-    const encodedMsg = message.encode()
+    const clonedMsg = Object.assign({}, message)
     try {
       // state call errs if the from address does not exist on chain yet, lookup from actor ID to know this for sure
-      await this.jsonRpcEngine.request('StateLookupID', encodedMsg.From, null)
+      await this.jsonRpcEngine.request('StateLookupID', clonedMsg.From, null)
     } catch (err) {
       // if from actor doesnt exist, use a hardcoded known actor address
       if (err.message.toLowerCase().includes('address not found')) {
-        encodedMsg.From = 't01'
+        clonedMsg.From = 't01'
       }
     }
     const stateCallRes = await this.jsonRpcEngine.request(
       'StateCall',
-      encodedMsg,
+      clonedMsg,
       null,
     )
     if (stateCallRes.Error) throw new Error(stateCallRes.Error)
