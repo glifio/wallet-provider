@@ -140,7 +140,7 @@ describe('provider', () => {
     })
 
     test('should call request with StateCall, the message, and null as the tipset', async () => {
-      await filecoin.estimateGas(message)
+      await filecoin.estimateGas(message.encode())
       expect(filecoin.jsonRpcEngine.request.mock.calls[1][1].To).toBe(
         message.encode().To,
       )
@@ -172,7 +172,7 @@ describe('provider', () => {
         gasLimit: 100,
         nonce: 1,
       })
-      await filecoin.estimateGas(message)
+      await filecoin.estimateGas(message.encode())
       expect(filecoin.jsonRpcEngine.request.mock.calls[1][1].To).toBe(
         message.encode().To,
       )
@@ -192,10 +192,28 @@ describe('provider', () => {
       expect(filecoin.jsonRpcEngine.request.mock.calls[1][1].From).toBe('t01')
     })
 
+    test('should not mutate the original filecoin message obj', async () => {
+      const message = new Message({
+        to: 't01',
+        from: 't0999',
+        value: new BigNumber('1'),
+        method: 0,
+        gasPrice: new BigNumber('1000'),
+        gasLimit: 100,
+        nonce: 1,
+      })
+
+      const encodedMsg = message.encode()
+
+      await filecoin.estimateGas(encodedMsg)
+
+      expect(encodedMsg.From).toBe('t0999')
+    })
+
     test('should return a FilecoinNumber instance', async () => {
-      await expect(filecoin.estimateGas(message)).resolves.toBeInstanceOf(
-        FilecoinNumber,
-      )
+      await expect(
+        filecoin.estimateGas(message.encode()),
+      ).resolves.toBeInstanceOf(FilecoinNumber)
     })
   })
 })
