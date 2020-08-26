@@ -1,7 +1,8 @@
-import { FilecoinNumber, BigNumber } from '@openworklabs/filecoin-number'
+import { FilecoinNumber } from '@openworklabs/filecoin-number'
 import LotusRpcEngine from '@openworklabs/lotus-jsonrpc-engine'
 import { checkAddressString } from '@openworklabs/filecoin-address'
 import { Message } from '@openworklabs/filecoin-message'
+import { KNOWN_T0_ADDRESS, KNOWN_T1_ADDRESS, KNOWN_T3_ADDRESS } from './utils'
 
 export { default as LocalNodeProvider } from './providers/LocalNodeProvider'
 export * from './utils'
@@ -65,9 +66,15 @@ class Filecoin {
     } catch (err) {
       // if from actor doesnt exist, use a hardcoded known actor address
       if (err.message.toLowerCase().includes('actor not found')) {
-        if (clonedMsg.From[1] === '1') clonedMessage.From = 't01'
-        if (clonedMsg.From[1] === '3') clonedMessage.From = 't01'
-        clonedMsg.From = 't01'
+        if (clonedMsg.From[1] === '0') clonedMessage.From = KNOWN_T0_ADDRESS
+        else if (clonedMsg.From[1] === '1')
+          clonedMessage.From = KNOWN_T1_ADDRESS
+        else if (clonedMsg.From[1] === '3')
+          clonedMessage.From = KNOWN_T3_ADDRESS
+        else {
+          // this should never happen, only t1 and t3 addresses can be
+          clonedMsg.From = KNOWN_T0_ADDRESS
+        }
       }
     }
     return clonedMsg
