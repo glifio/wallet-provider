@@ -152,6 +152,15 @@ class Filecoin {
       params: Params,
     })
   }
+
+  /** Placeholders until https://github.com/filecoin-project/lotus/issues/3326 lands  */
+  gasEstimateMaxFee = async message => {
+    return new FilecoinNumber('12435085', 'attofil')
+  }
+
+  gasLookupTxFee = async message => {
+    return new FilecoinNumber('12435085', 'attofil')
+  }
 }
 
 export default Filecoin
