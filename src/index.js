@@ -66,11 +66,10 @@ class Filecoin {
     } catch (err) {
       // if from actor doesnt exist, use a hardcoded known actor address
       if (err.message.toLowerCase().includes('actor not found')) {
-        if (clonedMsg.From[1] === '0') clonedMessage.From = KNOWN_T0_ADDRESS
-        else if (clonedMsg.From[1] === '1')
-          clonedMessage.From = KNOWN_T1_ADDRESS
-        else if (clonedMsg.From[1] === '3')
-          clonedMessage.From = KNOWN_T3_ADDRESS
+        if (!clonedMsg.From) clonedMsg.From = KNOWN_T0_ADDRESS
+        if (clonedMsg.From[1] === '0') clonedMsg.From = KNOWN_T0_ADDRESS
+        else if (clonedMsg.From[1] === '1') clonedMsg.From = KNOWN_T1_ADDRESS
+        else if (clonedMsg.From[1] === '3') clonedMsg.From = KNOWN_T3_ADDRESS
         else {
           // this should never happen, only t1 and t3 addresses can be
           clonedMsg.From = KNOWN_T0_ADDRESS
@@ -95,16 +94,8 @@ class Filecoin {
 
   gasEstimateGasLimit = async message => {
     if (!message) throw new Error('No message provided.')
-    const clonedMsg = Object.assign({}, message)
-    try {
-      // state call errs if the from address does not exist on chain yet, lookup from actor ID to know this for sure
-      await this.jsonRpcEngine.request('StateLookupID', clonedMsg.From, null)
-    } catch (err) {
-      // if from actor doesnt exist, use a hardcoded known actor address
-      if (err.message.toLowerCase().includes('address not found')) {
-        clonedMsg.From = 't01'
-      }
-    }
+    const clonedMsg = await this.cloneMsgWOnChainFromAddr(message)
+
     const gasLimit = await this.jsonRpcEngine.request(
       'GasEstimateGasLimit',
       clonedMsg,
