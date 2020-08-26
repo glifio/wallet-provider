@@ -13,7 +13,7 @@ describe('provider', () => {
   let defaultAddress
   beforeAll(async () => {
     filecoin = new Filecoin(testSubProviderInstance, {
-      apiAddress: 'https://proxy.openworklabs.com/rpc/v0',
+      apiAddress: 'https://node.glif.io/space04/lotus/rpc/v0',
     })
 
     defaultAddress = await filecoin.jsonRpcEngine.request(
