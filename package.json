@@ -1,13 +1,12 @@
 {
   "name": "@openworklabs/filecoin-wallet-provider",
-  "version": "1.0.0",
+  "version": "1.0.0-beta.1",
   "description": "a javascript package to send filecoin to addresses",
   "main": "./dist/index.js",
   "scripts": {
     "build": "tsc",
     "lint": "tslint -p tsconfig.json",
     "prepare": "npm run build",
-    "prepublishOnly": "npm test && npm run lint",
     "test:build": "npm run build && jest",
     "test": "jest",
     "test:watch": "npm run build && jest --watch"
