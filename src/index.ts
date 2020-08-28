@@ -2,10 +2,15 @@ import { FilecoinNumber } from '@openworklabs/filecoin-number'
 import LotusRpcEngine, { Config } from '@openworklabs/lotus-jsonrpc-engine'
 import { checkAddressString } from '@openworklabs/filecoin-address'
 import { Message, LotusMessage } from '@openworklabs/filecoin-message'
-import { KNOWN_T0_ADDRESS, KNOWN_T1_ADDRESS, KNOWN_T3_ADDRESS } from './utils'
+import {
+  KNOWN_T0_ADDRESS,
+  KNOWN_T1_ADDRESS,
+  KNOWN_T3_ADDRESS,
+  validatePath,
+} from './utils'
 
 // export { default as LocalNodeProvider } from './providers/LocalNodeProvider'
-export * from './utils'
+export { validatePath }
 
 interface SignFunc {
   // path looks like m/44'/461'/1'/0/0/0 -
