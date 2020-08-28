@@ -46,13 +46,16 @@ class Filecoin {
     })
   }
 
-  getBalance = async (address: string) => {
+  getBalance = async (address: string): Promise<FilecoinNumber> => {
     checkAddressString(address)
     const balance = await this.jsonRpcEngine.request('WalletBalance', address)
     return new FilecoinNumber(balance, 'attofil')
   }
 
-  sendMessage = async (message: LotusMessage, signature: string) => {
+  sendMessage = async (
+    message: LotusMessage,
+    signature: string,
+  ): Promise<{ '/': string }> => {
     if (!message) throw new Error('No message provided.')
     if (!signature) throw new Error('No signature provided.')
     const signedMessage = {
@@ -64,7 +67,10 @@ class Filecoin {
       },
     }
 
-    const tx = await this.jsonRpcEngine.request('MpoolPush', signedMessage)
+    const tx: Promise<{ '/': string }> = await this.jsonRpcEngine.request(
+      'MpoolPush',
+      signedMessage,
+    )
     return tx
   }
 
