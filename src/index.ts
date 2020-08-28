@@ -1,5 +1,5 @@
 import { FilecoinNumber } from '@openworklabs/filecoin-number'
-import LotusRpcEngine from '@openworklabs/lotus-jsonrpc-engine'
+import LotusRpcEngine, { Config } from '@openworklabs/lotus-jsonrpc-engine'
 import { checkAddressString } from '@openworklabs/filecoin-address'
 import { Message, LotusMessage } from '@openworklabs/filecoin-message'
 import { KNOWN_T0_ADDRESS, KNOWN_T1_ADDRESS, KNOWN_T3_ADDRESS } from './utils'
@@ -7,13 +7,8 @@ import { KNOWN_T0_ADDRESS, KNOWN_T1_ADDRESS, KNOWN_T3_ADDRESS } from './utils'
 // export { default as LocalNodeProvider } from './providers/LocalNodeProvider'
 export * from './utils'
 
-export interface Config {
-  readonly apiAddress: string
-  readonly token: string
-}
-
 interface SignFunc {
-  // path looks like m/44'/461'/1'/0/0/0
+  // path looks like m/44'/461'/1'/0/0/0 -
   (message: LotusMessage, path: string): Promise<string>
 }
 
@@ -32,18 +27,12 @@ class Filecoin {
   public jsonRpcEngine: LotusRpcEngine
 
   constructor(
-    provider: any,
-    config: { apiAddress: string; token: string } = {
-      apiAddress: '',
-      token: '',
-    },
+    provider: WalletSubProvider,
+    config: Config = { apiAddress: 'http://127.0.0.1:1234/rpc/v0' },
   ) {
     if (!provider) throw new Error('No provider provided.')
     this.wallet = provider
-    this.jsonRpcEngine = new LotusRpcEngine({
-      apiAddress: config.apiAddress || 'http://127.0.0.1:1234/rpc/v0',
-      token: config.token,
-    })
+    this.jsonRpcEngine = new LotusRpcEngine(config)
   }
 
   getBalance = async (address: string): Promise<FilecoinNumber> => {

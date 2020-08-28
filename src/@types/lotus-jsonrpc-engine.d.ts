@@ -1,7 +1,7 @@
 declare module '@openworklabs/lotus-jsonrpc-engine' {
   export interface Config {
     apiAddress: string
-    token: string
+    token?: string
   }
 
   export interface Request {
