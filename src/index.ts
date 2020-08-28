@@ -1,29 +1,58 @@
 import { FilecoinNumber } from '@openworklabs/filecoin-number'
 import LotusRpcEngine from '@openworklabs/lotus-jsonrpc-engine'
 import { checkAddressString } from '@openworklabs/filecoin-address'
-import { Message } from '@openworklabs/filecoin-message'
+import { Message, LotusMessage } from '@openworklabs/filecoin-message'
 import { KNOWN_T0_ADDRESS, KNOWN_T1_ADDRESS, KNOWN_T3_ADDRESS } from './utils'
 
-export { default as LocalNodeProvider } from './providers/LocalNodeProvider'
+// export { default as LocalNodeProvider } from './providers/LocalNodeProvider'
 export * from './utils'
 
+export interface Config {
+  readonly apiAddress: string
+  readonly token: string
+}
+
+interface SignFunc {
+  // path looks like m/44'/461'/1'/0/0/0
+  (message: LotusMessage, path: string): Promise<string>
+}
+
+interface GetAccountsFunc {
+  // network here is 't' (testnet) or 'f' (mainnet)
+  (network: string, startIdx: number, endIdx: number): string[]
+}
+
+export interface WalletSubProvider {
+  sign: SignFunc
+  getAccounts: GetAccountsFunc
+}
+
 class Filecoin {
-  constructor(provider, { apiAddress, token } = {}) {
+  public wallet: WalletSubProvider
+  public jsonRpcEngine: LotusRpcEngine
+
+  constructor(
+    provider: any,
+    config: { apiAddress: string; token: string } = {
+      apiAddress: '',
+      token: '',
+    },
+  ) {
     if (!provider) throw new Error('No provider provided.')
     this.wallet = provider
     this.jsonRpcEngine = new LotusRpcEngine({
-      apiAddress: apiAddress || 'http://127.0.0.1:1234/rpc/v0',
-      token,
+      apiAddress: config.apiAddress || 'http://127.0.0.1:1234/rpc/v0',
+      token: config.token,
     })
   }
 
-  getBalance = async address => {
+  getBalance = async (address: string) => {
     checkAddressString(address)
     const balance = await this.jsonRpcEngine.request('WalletBalance', address)
     return new FilecoinNumber(balance, 'attofil')
   }
 
-  sendMessage = async (message, signature) => {
+  sendMessage = async (message: LotusMessage, signature: string) => {
     if (!message) throw new Error('No message provided.')
     if (!signature) throw new Error('No signature provided.')
     const signedMessage = {
@@ -39,7 +68,7 @@ class Filecoin {
     return tx
   }
 
-  getNonce = async address => {
+  getNonce = async (address: string): Promise<number> => {
     if (!address) throw new Error('No address provided.')
     checkAddressString(address)
     try {
@@ -58,7 +87,9 @@ class Filecoin {
     }
   }
 
-  cloneMsgWOnChainFromAddr = async message => {
+  cloneMsgWOnChainFromAddr = async (
+    message: LotusMessage,
+  ): Promise<LotusMessage> => {
     const clonedMsg = Object.assign({}, message)
     try {
       // state call errs if the from address does not exist on chain yet, lookup from actor ID to know this for sure
@@ -79,7 +110,9 @@ class Filecoin {
     return clonedMsg
   }
 
-  gasEstimateFeeCap = async (message = {}) => {
+  gasEstimateFeeCap = async (
+    message: LotusMessage,
+  ): Promise<FilecoinNumber> => {
     if (!message) throw new Error('No message provided.')
     const clonedMsg = await this.cloneMsgWOnChainFromAddr(message)
     const feeCap = await this.jsonRpcEngine.request(
@@ -92,7 +125,9 @@ class Filecoin {
     return new FilecoinNumber(feeCap, 'attofil')
   }
 
-  gasEstimateGasLimit = async message => {
+  gasEstimateGasLimit = async (
+    message: LotusMessage,
+  ): Promise<FilecoinNumber> => {
     if (!message) throw new Error('No message provided.')
     const clonedMsg = await this.cloneMsgWOnChainFromAddr(message)
 
@@ -105,7 +140,10 @@ class Filecoin {
     return new FilecoinNumber(gasLimit, 'attofil')
   }
 
-  gasEstimateGasPremium = async (message, numBlocksIncluded = 0) => {
+  gasEstimateGasPremium = async (
+    message: LotusMessage,
+    numBlocksIncluded: number = 0,
+  ): Promise<FilecoinNumber> => {
     if (!message) throw new Error('No message provided.')
     const clonedMsg = await this.cloneMsgWOnChainFromAddr(message)
 
@@ -120,7 +158,10 @@ class Filecoin {
     return new FilecoinNumber(gasPremium, 'attofil')
   }
 
-  gasEstimateMessageGas = async (message, maxFee = '0') => {
+  gasEstimateMessageGas = async (
+    message: LotusMessage,
+    maxFee: string = '0',
+  ): Promise<Message> => {
     if (!message) throw new Error('No message provided.')
     const clonedMsg = await this.cloneMsgWOnChainFromAddr(message)
     const {
@@ -154,11 +195,13 @@ class Filecoin {
   }
 
   /** Placeholders until https://github.com/filecoin-project/lotus/issues/3326 lands  */
-  gasEstimateMaxFee = async message => {
+  gasEstimateMaxFee = async (
+    message: LotusMessage,
+  ): Promise<FilecoinNumber> => {
     return new FilecoinNumber('12435085', 'attofil')
   }
 
-  gasLookupTxFee = async message => {
+  gasLookupTxFee = async (message: LotusMessage): Promise<FilecoinNumber> => {
     return new FilecoinNumber('12435085', 'attofil')
   }
 }

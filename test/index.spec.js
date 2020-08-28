@@ -164,7 +164,7 @@ describe('provider', () => {
         expect(res.isGreaterThan(0)).toBe(true)
       })
 
-      test('it should not fail if no or an invalid Lotus message is passed', async () => {
+      test('it should fail if no or an invalid Lotus message is passed', async () => {
         await expect(
           filecoin.gasEstimateFeeCap({
             To:
@@ -172,7 +172,7 @@ describe('provider', () => {
           }),
         ).resolves.not.toThrow()
 
-        await expect(filecoin.gasEstimateFeeCap()).resolves.not.toThrow()
+        await expect(filecoin.gasEstimateFeeCap()).rejects.toThrow()
       })
     })
 
