@@ -12,14 +12,15 @@ import {
 // export { default as LocalNodeProvider } from './providers/LocalNodeProvider'
 export { validatePath }
 
+type Network = 'f' | 't'
+
 interface SignFunc {
   // path looks like m/44'/461'/1'/0/0/0 -
   (message: LotusMessage, path: string): Promise<string>
 }
 
 interface GetAccountsFunc {
-  // network here is 't' (testnet) or 'f' (mainnet)
-  (network: string, startIdx: number, endIdx: number): string[]
+  (network: Network, startIdx: number, endIdx: number): string[]
 }
 
 export interface WalletSubProvider {
