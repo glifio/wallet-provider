@@ -9,7 +9,6 @@ import {
   validatePath,
 } from './utils'
 
-// export { default as LocalNodeProvider } from './providers/LocalNodeProvider'
 export { validatePath }
 
 type Network = 'f' | 't'
