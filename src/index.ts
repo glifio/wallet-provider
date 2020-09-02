@@ -166,7 +166,6 @@ class Filecoin {
     const clonedMsg = await this.cloneMsgWOnChainFromAddr(message)
     const {
       To,
-      From,
       Value,
       GasPremium,
       GasFeeCap,
@@ -183,7 +182,7 @@ class Filecoin {
 
     return new Message({
       to: To,
-      from: From,
+      from: message.From,
       value: Value,
       gasPremium: GasPremium,
       gasFeeCap: GasFeeCap,

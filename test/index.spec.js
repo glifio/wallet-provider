@@ -2,6 +2,7 @@ const Filecoin = require('../dist').default
 const { FilecoinNumber } = require('@openworklabs/filecoin-number')
 const { Message } = require('@openworklabs/filecoin-message')
 const CID = require('cids')
+const { KNOWN_T0_ADDRESS } = require('../dist/utils/knownAddresses')
 
 const testSubProviderInstance = {
   getAccounts: jest.fn().mockImplementation(() => {}),
@@ -10,17 +11,10 @@ const testSubProviderInstance = {
 
 describe('provider', () => {
   let filecoin
-  let defaultAddress
   beforeAll(async () => {
     filecoin = new Filecoin(testSubProviderInstance, {
       apiAddress: 'https://node.glif.io/space04/lotus/rpc/v0',
     })
-
-    defaultAddress = await filecoin.jsonRpcEngine.request(
-      'WalletDefaultAddress',
-    )
-
-    if (!defaultAddress) throw new Error('Node must have a default wallet')
   })
 
   describe('constructor', () => {
@@ -45,12 +39,12 @@ describe('provider', () => {
     beforeEach(jest.clearAllMocks)
 
     test('should call WalletBalance with address', async () => {
-      const balance = await filecoin.getBalance(defaultAddress)
+      const balance = await filecoin.getBalance(KNOWN_T0_ADDRESS)
       expect(balance.isGreaterThanOrEqualTo(0)).toBeTruthy()
     })
 
     test('should return an instance of filecoin number', async () => {
-      const balance = await filecoin.getBalance(defaultAddress)
+      const balance = await filecoin.getBalance(KNOWN_T0_ADDRESS)
       expect(balance instanceof FilecoinNumber).toBeTruthy()
     })
 
@@ -74,8 +68,8 @@ describe('provider', () => {
       await expect(filecoin.sendMessage()).rejects.toThrow()
 
       const message = new Message({
-        to: defaultAddress,
-        from: defaultAddress,
+        to: KNOWN_T0_ADDRESS,
+        from: KNOWN_T0_ADDRESS,
         value: new FilecoinNumber('1', 'attofil').toAttoFil(),
         method: 0,
         nonce: 0,
@@ -87,10 +81,10 @@ describe('provider', () => {
     })
 
     test('should return the tx CID', async () => {
-      const nonce = await filecoin.getNonce(defaultAddress)
+      const nonce = await filecoin.getNonce(KNOWN_T0_ADDRESS)
       const message = new Message({
-        to: defaultAddress,
-        from: defaultAddress,
+        to: KNOWN_T0_ADDRESS,
+        from: KNOWN_T0_ADDRESS,
         value: new FilecoinNumber('1', 'attofil').toAttoFil(),
         method: 0,
         nonce,
@@ -102,7 +96,7 @@ describe('provider', () => {
 
       const { Signature } = await filecoin.jsonRpcEngine.request(
         'WalletSignMessage',
-        defaultAddress,
+        KNOWN_T0_ADDRESS,
         msgWithGas,
       )
 
@@ -260,6 +254,23 @@ describe('provider', () => {
         expect(lotusMsg.GasFeeCap).toBeTruthy()
       })
 
+      test('it returns the message with the same from address', async () => {
+        const message = await filecoin.gasEstimateMessageGas({
+          To: 't1hvuzpfdycc6z6mjgbiyaiojikd6wk2vwy7muuei',
+          From:
+            't3sjc7xz3vs67hdya2cbbp6eqmihfrtidhnfjqjlntokwx5trfl5zvf7ayxnbfcexg64nqpodxhsxcdiu7lqtq',
+          Nonce: 0,
+          Value: '1000',
+          Method: 0,
+          Params: [],
+        })
+
+        const lotusMsg = message.toLotusType()
+        expect(lotusMsg.From).toBe(
+          't3sjc7xz3vs67hdya2cbbp6eqmihfrtidhnfjqjlntokwx5trfl5zvf7ayxnbfcexg64nqpodxhsxcdiu7lqtq',
+        )
+      })
+
       test('it throws when no or an invalid message is passed', async () => {
         await expect(
           filecoin.gasEstimateMessageGas({
@@ -273,14 +284,13 @@ describe('provider', () => {
   })
 
   describe('cloneMsgWOnChainFromAddr', () => {
+    let unknownFromAddr = ''
+    beforeAll(async () => {
+      unknownFromAddr = await filecoin.jsonRpcEngine.request('WalletNew', 1)
+    })
     test('it attaches a known actor address when the From address does not exist on chain', async () => {
-      const unknownFromAddr = await filecoin.jsonRpcEngine.request(
-        'WalletNew',
-        1,
-      )
-
       const message = new Message({
-        to: defaultAddress,
+        to: KNOWN_T0_ADDRESS,
         from: unknownFromAddr,
         value: new FilecoinNumber('1', 'attofil').toAttoFil(),
         method: 0,
@@ -295,10 +305,10 @@ describe('provider', () => {
       expect(clonedMsg.From).not.toBe(unknownFromAddr)
     })
 
-    test('it does not chahnge from address when it already exists on chain', async () => {
+    test('it does not change from address when it already exists on chain', async () => {
       const message = new Message({
-        to: defaultAddress,
-        from: defaultAddress,
+        to: KNOWN_T0_ADDRESS,
+        from: KNOWN_T0_ADDRESS,
         value: new FilecoinNumber('1', 'attofil').toAttoFil(),
         method: 0,
         nonce: 0,
@@ -309,7 +319,22 @@ describe('provider', () => {
       )
 
       expect(clonedMsg.From).toBeTruthy()
-      expect(clonedMsg.From).toBe(defaultAddress)
+      expect(clonedMsg.From).toBe(KNOWN_T0_ADDRESS)
+    })
+
+    test('it does not mutate the original object', async () => {
+      const message = new Message({
+        to: KNOWN_T0_ADDRESS,
+        from: unknownFromAddr,
+        value: new FilecoinNumber('1', 'attofil').toAttoFil(),
+        method: 0,
+        nonce: 0,
+      })
+
+      const msg = message.toLotusType()
+      await filecoin.cloneMsgWOnChainFromAddr(msg)
+
+      expect(msg.From).toBe(unknownFromAddr)
     })
   })
 })
