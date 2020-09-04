@@ -8,7 +8,7 @@
  * invalid: m/44/461'/1'/
  */
 
-export default path => {
+export default (path: string): boolean => {
   const tree = path.split('/')
   if (tree.length !== 6) return false
   return tree.every((v, i) => {
