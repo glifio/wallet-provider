@@ -179,7 +179,7 @@ await filecoin.addWalletProvider(new SimpleJSWallet())
 
 const accounts = await filecoin.listAccounts()
 // ['t1jdlfl73voaiblrvn2yfivvn5ifucwwv5f26nfza', 't1hvuzpfdycc6z6mjgbiyaiojikd6wk2vwy7muuei']
-// returns accounts from both wallet types
+// Returns accounts from both wallet types
 ```
 
 Ideally, each Wallet Class in the above example will follow a simple interface and exposes a few functions, similar to MetaMask's [Keyring Class Protocol](t1hvuzpfdycc6z6mjgbiyaiojikd6wk2vwy7muuei). We could match this interface with the `Wallet` methods in the [Lotus jsonrpc](https://github.com/filecoin-project/lotus/blob/master/api/api_full.go) (with the exception of `balance` and `list` because those do not need access to underlying private keys).
