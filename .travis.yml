@@ -3,6 +3,9 @@ os: linux
 language: node_js
 install:
   - npm i
+cache:
+  directories:
+    - node_modules
 
 node_js:
   - '12'
