@@ -2,7 +2,7 @@ const Filecoin = require('../dist').default
 const { FilecoinNumber } = require('@openworklabs/filecoin-number')
 const { Message } = require('@openworklabs/filecoin-message')
 const CID = require('cids')
-const { KNOWN_T0_ADDRESS } = require('../dist/utils/knownAddresses')
+const { KNOWN_TYPE_0_ADDRESS } = require('../dist/utils/knownAddresses')
 
 const testSubProviderInstance = {
   getAccounts: jest.fn().mockImplementation(() => {}),
@@ -39,12 +39,12 @@ describe('provider', () => {
     beforeEach(jest.clearAllMocks)
 
     test('should call WalletBalance with address', async () => {
-      const balance = await filecoin.getBalance(KNOWN_T0_ADDRESS)
+      const balance = await filecoin.getBalance(KNOWN_TYPE_0_ADDRESS['t'])
       expect(balance.isGreaterThanOrEqualTo(0)).toBeTruthy()
     })
 
     test('should return an instance of filecoin number', async () => {
-      const balance = await filecoin.getBalance(KNOWN_T0_ADDRESS)
+      const balance = await filecoin.getBalance(KNOWN_TYPE_0_ADDRESS['t'])
       expect(balance instanceof FilecoinNumber).toBeTruthy()
     })
 
@@ -68,8 +68,8 @@ describe('provider', () => {
       await expect(filecoin.sendMessage()).rejects.toThrow()
 
       const message = new Message({
-        to: KNOWN_T0_ADDRESS,
-        from: KNOWN_T0_ADDRESS,
+        to: KNOWN_TYPE_0_ADDRESS['t'],
+        from: KNOWN_TYPE_0_ADDRESS['t'],
         value: new FilecoinNumber('1', 'attofil').toAttoFil(),
         method: 0,
         nonce: 0,
@@ -81,10 +81,10 @@ describe('provider', () => {
     })
 
     test('should return the tx CID', async () => {
-      const nonce = await filecoin.getNonce(KNOWN_T0_ADDRESS)
+      const nonce = await filecoin.getNonce(KNOWN_TYPE_0_ADDRESS['t'])
       const message = new Message({
-        to: KNOWN_T0_ADDRESS,
-        from: KNOWN_T0_ADDRESS,
+        to: KNOWN_TYPE_0_ADDRESS['t'],
+        from: KNOWN_TYPE_0_ADDRESS['t'],
         value: new FilecoinNumber('1', 'attofil').toAttoFil(),
         method: 0,
         nonce,
@@ -96,7 +96,7 @@ describe('provider', () => {
 
       const { Signature } = await filecoin.jsonRpcEngine.request(
         'WalletSignMessage',
-        KNOWN_T0_ADDRESS,
+        KNOWN_TYPE_0_ADDRESS['t'],
         msgWithGas,
       )
 
@@ -164,7 +164,7 @@ describe('provider', () => {
             To:
               't3sjc7xz3vs67hdya2cbbp6eqmihfrtidhnfjqjlntokwx5trfl5zvf7ayxnbfcexg64nqpodxhsxcdiu7lqtq',
           }),
-        ).resolves.not.toThrow()
+        ).rejects.toThrow()
 
         await expect(filecoin.gasEstimateFeeCap()).rejects.toThrow()
       })
@@ -280,6 +280,24 @@ describe('provider', () => {
 
         await expect(filecoin.gasEstimateMessageGas()).rejects.toThrow()
       })
+
+      test('it attaches the right network prefix to the from and to address', async () => {
+        const message = await filecoin.gasEstimateMessageGas({
+          To: 'f1hvuzpfdycc6z6mjgbiyaiojikd6wk2vwy7muuei',
+          From:
+            'f3sjc7xz3vs67hdya2cbbp6eqmihfrtidhnfjqjlntokwx5trfl5zvf7ayxnbfcexg64nqpodxhsxcdiu7lqtq',
+          Nonce: 0,
+          Value: '1000',
+          Method: 0,
+          Params: [],
+        })
+
+        const lotusMsg = message.toLotusType()
+        expect(lotusMsg.From).toBe(
+          'f3sjc7xz3vs67hdya2cbbp6eqmihfrtidhnfjqjlntokwx5trfl5zvf7ayxnbfcexg64nqpodxhsxcdiu7lqtq',
+        )
+        expect(lotusMsg.To).toBe('f1hvuzpfdycc6z6mjgbiyaiojikd6wk2vwy7muuei')
+      })
     })
   })
 
@@ -290,7 +308,7 @@ describe('provider', () => {
     })
     test('it attaches a known actor address when the From address does not exist on chain', async () => {
       const message = new Message({
-        to: KNOWN_T0_ADDRESS,
+        to: KNOWN_TYPE_0_ADDRESS['t'],
         from: unknownFromAddr,
         value: new FilecoinNumber('1', 'attofil').toAttoFil(),
         method: 0,
@@ -307,8 +325,8 @@ describe('provider', () => {
 
     test('it does not change from address when it already exists on chain', async () => {
       const message = new Message({
-        to: KNOWN_T0_ADDRESS,
-        from: KNOWN_T0_ADDRESS,
+        to: KNOWN_TYPE_0_ADDRESS['t'],
+        from: KNOWN_TYPE_0_ADDRESS['t'],
         value: new FilecoinNumber('1', 'attofil').toAttoFil(),
         method: 0,
         nonce: 0,
@@ -319,12 +337,12 @@ describe('provider', () => {
       )
 
       expect(clonedMsg.From).toBeTruthy()
-      expect(clonedMsg.From).toBe(KNOWN_T0_ADDRESS)
+      expect(clonedMsg.From).toBe(KNOWN_TYPE_0_ADDRESS['t'])
     })
 
     test('it does not mutate the original object', async () => {
       const message = new Message({
-        to: KNOWN_T0_ADDRESS,
+        to: KNOWN_TYPE_0_ADDRESS['t'],
         from: unknownFromAddr,
         value: new FilecoinNumber('1', 'attofil').toAttoFil(),
         method: 0,
