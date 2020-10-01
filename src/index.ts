@@ -3,9 +3,9 @@ import LotusRpcEngine, { Config } from '@openworklabs/lotus-jsonrpc-engine'
 import { checkAddressString } from '@openworklabs/filecoin-address'
 import { Message, LotusMessage } from '@openworklabs/filecoin-message'
 import {
-  KNOWN_T0_ADDRESS,
-  KNOWN_T1_ADDRESS,
-  KNOWN_T3_ADDRESS,
+  KNOWN_TYPE_1_ADDRESS,
+  KNOWN_TYPE_3_ADDRESS,
+  KNOWN_TYPE_0_ADDRESS,
   validatePath,
 } from './utils'
 
@@ -97,13 +97,19 @@ class Filecoin {
     } catch (err) {
       // if from actor doesnt exist, use a hardcoded known actor address
       if (err.message.toLowerCase().includes('actor not found')) {
-        if (!clonedMsg.From) clonedMsg.From = KNOWN_T0_ADDRESS
-        if (clonedMsg.From[1] === '0') clonedMsg.From = KNOWN_T0_ADDRESS
-        else if (clonedMsg.From[1] === '1') clonedMsg.From = KNOWN_T1_ADDRESS
-        else if (clonedMsg.From[1] === '3') clonedMsg.From = KNOWN_T3_ADDRESS
+        const networkPrefix = clonedMsg.From[0] as Network
+
+        if (!clonedMsg.From)
+          clonedMsg.From = KNOWN_TYPE_0_ADDRESS[networkPrefix]
+        if (clonedMsg.From[1] === '0')
+          clonedMsg.From = KNOWN_TYPE_0_ADDRESS[networkPrefix]
+        else if (clonedMsg.From[1] === '1')
+          clonedMsg.From = KNOWN_TYPE_1_ADDRESS[networkPrefix]
+        else if (clonedMsg.From[1] === '3')
+          clonedMsg.From = KNOWN_TYPE_3_ADDRESS[networkPrefix]
         else {
-          // this should never happen, only t1 and t3 addresses can be
-          clonedMsg.From = KNOWN_T0_ADDRESS
+          // this should never happen, only t1 and t3 addresses can be used as a from?
+          clonedMsg.From = KNOWN_TYPE_0_ADDRESS[networkPrefix]
         }
       }
     }
