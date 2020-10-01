@@ -186,8 +186,10 @@ class Filecoin {
       null,
     )
 
+    // this is a hack to get by weird UI bugs where f addresses convert to t addresses
+    const toAddressWithCorrectPrefix = clonedMsg.To[0] + To.slice(1)
     return new Message({
-      to: To,
+      to: toAddressWithCorrectPrefix,
       from: message.From,
       value: Value,
       gasPremium: GasPremium,

@@ -280,6 +280,24 @@ describe('provider', () => {
 
         await expect(filecoin.gasEstimateMessageGas()).rejects.toThrow()
       })
+
+      test('it attaches the right network prefix to the from and to address', async () => {
+        const message = await filecoin.gasEstimateMessageGas({
+          To: 'f1hvuzpfdycc6z6mjgbiyaiojikd6wk2vwy7muuei',
+          From:
+            'f3sjc7xz3vs67hdya2cbbp6eqmihfrtidhnfjqjlntokwx5trfl5zvf7ayxnbfcexg64nqpodxhsxcdiu7lqtq',
+          Nonce: 0,
+          Value: '1000',
+          Method: 0,
+          Params: [],
+        })
+
+        const lotusMsg = message.toLotusType()
+        expect(lotusMsg.From).toBe(
+          'f3sjc7xz3vs67hdya2cbbp6eqmihfrtidhnfjqjlntokwx5trfl5zvf7ayxnbfcexg64nqpodxhsxcdiu7lqtq',
+        )
+        expect(lotusMsg.To).toBe('f1hvuzpfdycc6z6mjgbiyaiojikd6wk2vwy7muuei')
+      })
     })
   })
 
