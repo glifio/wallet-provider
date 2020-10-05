@@ -1,11 +1,13 @@
 {
   "name": "@openworklabs/filecoin-wallet-provider",
-  "version": "1.0.0-beta.7",
+  "version": "1.0.0-beta.8",
   "description": "a javascript package to send filecoin to addresses",
   "main": "./dist/index.js",
   "scripts": {
     "build": "tsc",
     "lint": "tslint -p tsconfig.json",
+    "notify:deprecated": "echo \"\\x1b[31m@openworklabs/filecoin-wallet-provider HAS BEEN DEPRECATED IN FAVOR OF:\n@glif/filecoin-wallet-provider\nPLEASE INSTALL UPDATED VERSION NOW.\"",
+    "preinstall": "npm run notify:deprecated",
     "prepare": "npm run build",
     "test:build": "npm run build && jest",
     "test": "jest",
@@ -15,10 +17,10 @@
   "license": "(Apache-2.0 OR MIT)",
   "dependencies": {
     "@babel/polyfill": "7.8.7",
-    "@openworklabs/filecoin-address": "0.0.11",
-    "@openworklabs/filecoin-message": "1.0.0-beta.4",
-    "@openworklabs/filecoin-number": "0.1.5",
-    "@openworklabs/lotus-jsonrpc-engine": "0.1.3",
+    "@openworklabs/filecoin-address": "0.0.14",
+    "@openworklabs/filecoin-message": "1.0.0-beta.5",
+    "@openworklabs/filecoin-number": "0.1.6",
+    "@openworklabs/lotus-jsonrpc-engine": "0.1.4",
     "bluebird": "3.7.2",
     "ts-jest": "^26.3.0"
   },
